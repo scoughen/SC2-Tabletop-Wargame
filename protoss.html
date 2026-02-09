@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protoss - StarCraft 2 Tabletop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a2332;
+            --secondary-blue: #2d3e50;
+            --accent-blue: #4a90e2;
+            --gold: #d4af37;
+            --light-gold: #f4e5a0;
+            --text-light: #e0e0e0;
+            --text-dark: #0a0a0a;
+            --card-bg: #1e2936;
+            --protoss-blue: #00a8ff;
+            --protoss-cyan: #00d9ff;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0a0a0a 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--gold);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--secondary-blue) 0%, var(--primary-blue) 100%);
+            padding: 80px 30px 30px;
+            transition: left 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .nav-menu.active {
+            left: 0;
+        }
+
+        .nav-menu h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+        }
+
+        .nav-menu ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-menu ul li a:hover {
+            color: var(--gold);
+            padding-left: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 20px 40px;
+            background: linear-gradient(180deg, rgba(0, 168, 255, 0.2) 0%, transparent 100%);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5em;
+            color: var(--protoss-cyan);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.6);
+        }
+
+        .faction-logo {
+            max-width: 200px;
+            height: auto;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .toc {
+            background: var(--card-bg);
+            border: 2px solid var(--protoss-blue);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .toc h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .toc ul {
+            list-style: none;
+            column-count: 2;
+            column-gap: 30px;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: var(--protoss-cyan);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            color: var(--gold);
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            color: var(--gold);
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--protoss-blue);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            color: var(--light-gold);
+            margin: 20px 0 15px;
+        }
+
+        .unit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .unit-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--secondary-blue) 100%);
+            border: 2px solid var(--protoss-blue);
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
+        }
+
+        .unit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
+            border-color: var(--protoss-cyan);
+        }
+
+        .unit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--protoss-blue);
+            padding-bottom: 15px;
+        }
+
+        .unit-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            color: var(--gold);
+        }
+
+        .unit-image {
+            max-width: 200px;
+            height: auto;
+            border-radius: 5px;
+            margin: 15px 0;
+            border: 2px solid var(--protoss-cyan);
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .stat-item {
+            background: rgba(0, 168, 255, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid var(--protoss-blue);
+        }
+
+        .stat-label {
+            font-weight: 700;
+            color: var(--protoss-cyan);
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            color: var(--text-light);
+        }
+
+        .special-abilities {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--secondary-blue);
+        }
+
+        .special-abilities h4 {
+            color: var(--protoss-cyan);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .special-abilities ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .special-abilities li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .special-abilities li:before {
+            content: "⬢";
+            position: absolute;
+            left: 0;
+            color: var(--protoss-cyan);
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(0, 168, 255, 0.2) 0%, var(--card-bg) 100%);
+            border: 3px solid var(--gold);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--secondary-blue);
+        }
+
+        th {
+            background: var(--secondary-blue);
+            font-family: 'Orbitron', sans-serif;
+            color: var(--protoss-cyan);
+        }
+
+        @media print {
+            .nav-toggle, .nav-menu {
+                display: none;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .unit-grid {
+                grid-template-columns: 1fr;
+            }
+            .toc ul {
+                column-count: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="nav-toggle" onclick="toggleNav()">☰ MENU</button>
+    
+    <nav class="nav-menu" id="navMenu">
+        <h3>Navigation</h3>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Core Rules</a></li>
+            <li><a href="terran.html">Terran</a></li>
+            <li><a href="protoss.html">Protoss</a></li>
+            <li><a href="zerg.html">Zerg</a></li>
+            <li><a href="scenarios.html">Scenarios</a></li>
+            <li><a href="reference.html">Quick Reference</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>PROTOSS</h1>
+        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages7.alphacoders.com%2F102%2F1026126.jpg&f=1&nofb=1&ipt=04b1ca1686ebedb6599634fd8c0289da718f3d4f5f3432a48b4a81c5aec0d786" alt="Advanced technology" class="faction-logo">
+        <p style="font-size: 1.2em; margin-top: 20px;">Ancient warrior race with powerful shields and warp technology</p>
+    </header>
+
+    <div class="container">
+        <div class="toc">
+            <h2>Contents</h2>
+            <ul>
+                <li><a href="#overview">Faction Overview</a></li>
+                <li><a href="#workers">Workers</a></li>
+                <li><a href="#gateway">Gateway Units</a></li>
+                <li><a href="#robotics">Robotics Units</a></li>
+                <li><a href="#stargate">Stargate Units</a></li>
+                <li><a href="#buildings">Buildings</a></li>
+                <li><a href="#heroes">Hero Units</a></li>
+            </ul>
+        </div>
+
+        <section id="overview">
+            <h2>Faction Overview</h2>
+            <div class="info-box" style="background: var(--card-bg); padding: 25px; border-left: 4px solid var(--protoss-cyan); margin: 20px 0;">
+                <h3 style="color: var(--protoss-cyan);">Core Philosophy</h3>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Shields:</strong> Two-layer defense system (shields + armor)</li>
+                    <li><strong>Pylon Power:</strong> Buildings require power from Pylons</li>
+                    <li><strong>Warp Technology:</strong> Instant unit production near Pylons</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="workers">
+            <h2>Workers</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Probe</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">15 Minerals</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2F4%2F4f%2FSC2Probe.jpg&f=1&nofb=1&ipt=441e86b8987eceff26245f42d444ca16088416652004218f74d2676543eb98d8" alt="Advanced worker drone" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">6"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Mechanical</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 5+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">Melee</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">1 / 6+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Gather:</strong> +5 Minerals or Gas when adjacent to node/extractor</li>
+                            <li><strong>Warp In:</strong> Starts building then immediately moves/gathers</li>
+                            <li>Building auto-completes after 1 round</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gateway">
+            <h2>Gateway Units</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Zealot</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">40 Minerals</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2F5%2F5c%2FSC2Zealot.jpg&f=1&nofb=1&ipt=d921e4ee62fd605da1ef787ccce739a364a14f6742c722b0ee17b43fb15d67a0" alt="Warrior" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">5"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">2 | To Hit: 3+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">Melee</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">2 / 5+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">2</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Upgrades</h4>
+                        <ul>
+                            <li><strong>Charge</strong> (80M/80G): Once per activation, +6" move toward nearest enemy and engage melee</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Stalker</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">50M / 20G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2F6%2F63%2FSC2Stalker.jpg&f=1&nofb=1&ipt=6d5ae4f52289663c21728854a3d2fb8f79d721448ae4b3767968e94af93db627" alt="Advanced mech" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">6"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Armored, Mechanical</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Ground & Air)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">2 / 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">2</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Upgrades</h4>
+                        <ul>
+                            <li><strong>Blink</strong> (60M/60G): Once per activation, teleport up to 8" (ignore terrain, units, buildings)</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Cybernetics Core</em></p>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Sentry</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">20M / 40G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2Fe%2Fe0%2FSC2Sentry.jpg%2F600px-SC2Sentry.jpg&f=1&nofb=1&ipt=be6df720baba35dbcd8e8acabf34dd27af92cf17a0136b457bd71c37aec8485c" alt="Support unit" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">6"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Mechanical</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">12" (Ground & Air)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">2 / 5+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Guardian Shield:</strong> All friendly units within 6" gain +1 to armor saves vs ranged (1 round)</li>
+                            <li><strong>Force Field:</strong> Place 4" line barrier blocking movement (1 round)</li>
+                            <li><strong>Hallucination</strong> (once per game): Create fake copy of friendly unit</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Cybernetics Core</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="robotics">
+            <h2>Robotics Units</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Immortal</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">100M / 40G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fe%2Fee%2FSC2Immortal.jpg&f=1&nofb=1&ipt=506445c9a5a72823a383223362a597f1434a827a8b18c14be40af60f5a9aac30" alt="Heavy mech unit" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">5"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Armored, Mechanical</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">2 | To Hit: 3+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Ground only)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">2 / 3+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">4</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Strike: Armored</strong> - +1 die per model vs Armored units, Strike hits ignore saves</li>
+                            <li><strong>Hardened Shields:</strong> Strike dice rolled against this unit can be saved normally (on 3+)</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Robotics Facility</em></p>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Colossus</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">120M / 80G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2F6%2F6c%2FSC2Colossus.jpg%2F600px-SC2Colossus.jpg&f=1&nofb=1&ipt=e412c38863152c8513d69d5b339f33e6937fcf62d5226261db15e2280fdc58a8" alt="Giant walker" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">6"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Massive, Mechanical</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">2 | To Hit: 3+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Ground, 6" line)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">3 / 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">5</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Line Splash:</strong> All models in 6" line from target take hits</li>
+                            <li><strong>Cliff Walk:</strong> Move up/down cliffs as if flying (but is ground unit)</li>
+                            <li><strong>Extended Thermal Lance</strong> (upgrade 80M/80G): +3" range (becomes 21")</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Robotics Bay</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stargate">
+            <h2>Stargate Units</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Phoenix</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">60M / 40G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2F8%2F8a%2FSC2Phoenix.jpg&f=1&nofb=1&ipt=0aa2861faa7320372b4008419cf6dc3544d554df37bdf918142e2548fe417d9d" alt="Fighter aircraft" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">14" (Flying)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Mechanical, Flying</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">12" (Air only)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">2 / 5+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">2</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Strike: Light</strong> - +1 die vs Light units, Strike hits ignore saves</li>
+                            <li><strong>Graviton Beam:</strong> Once per activation, lift one Light ground unit (cannot move/attack until Phoenix's next activation)</li>
+                            <li><strong>Anion Pulse Crystals</strong> (upgrade 60M/60G): +2" range (becomes 14")</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Stargate</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="buildings">
+            <h2>Buildings</h2>
+            
+            <h3>Main Base</h3>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Nexus</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">200 Minerals</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Construction</div>
+                            <div class="stat-value">2 rounds</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Production</div>
+                            <div class="stat-value">3 Probes/round</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">5 / 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">15</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Income:</strong> +10 Minerals per Economy Phase</li>
+                            <li><strong>Shield Regen:</strong> Regenerates 2 shields per Production Phase</li>
+                            <li><strong>Chrono Boost</strong> (every other round): Target building produces instantly OR completes research instantly</li>
+                            <li><strong>Unlocks:</strong> Probes, Gateway, Assimilator, Pylon</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Production Buildings</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Building</th>
+                        <th>Cost</th>
+                        <th>Time</th>
+                        <th>Shields/Wounds</th>
+                        <th>Produces</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Gateway</td>
+                        <td>75M</td>
+                        <td>1 round</td>
+                        <td>2/6</td>
+                        <td>Zealots (4/round)</td>
+                    </tr>
+                    <tr>
+                        <td>Warp Gate</td>
+                        <td>Transform</td>
+                        <td>-</td>
+                        <td>2/6</td>
+                        <td>Instant warp (9" from Pylon)</td>
+                    </tr>
+                    <tr>
+                        <td>Robotics Facility</td>
+                        <td>100M/50G</td>
+                        <td>1 round</td>
+                        <td>2/8</td>
+                        <td>Immortals (2/round)</td>
+                    </tr>
+                    <tr>
+                        <td>Robotics Bay</td>
+                        <td>100M/75G</td>
+                        <td>1 round</td>
+                        <td>2/6</td>
+                        <td>Unlocks Colossi</td>
+                    </tr>
+                    <tr>
+                        <td>Stargate</td>
+                        <td>75M/75G</td>
+                        <td>1 round</td>
+                        <td>2/8</td>
+                        <td>Phoenix (1/round)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Tech Buildings</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Building</th>
+                        <th>Cost</th>
+                        <th>Shields/Wounds</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cybernetics Core</td>
+                        <td>75M/50G</td>
+                        <td>2/6</td>
+                        <td>Unlocks Stalkers, Sentries, Warp Gate research</td>
+                    </tr>
+                    <tr>
+                        <td>Forge</td>
+                        <td>75M</td>
+                        <td>2/6</td>
+                        <td>Ground weapon/armor upgrades, Photon Cannons</td>
+                    </tr>
+                    <tr>
+                        <td>Twilight Council</td>
+                        <td>75M/50G</td>
+                        <td>2/6</td>
+                        <td>Advanced upgrades (Blink, Charge)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Support Buildings</h3>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Pylon</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">50 Minerals</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Construction</div>
+                            <div class="stat-value">1 round</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">2 / 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">4</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special</h4>
+                        <ul>
+                            <li><strong>Power Field:</strong> 9" radius powers all Protoss buildings</li>
+                            <li><strong>Warp In Point:</strong> Warp Gates can warp units near any Pylon</li>
+                            <li><strong>Critical:</strong> Unpowered buildings cannot function</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Photon Cannon</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">75 Minerals</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">2 | To Hit: 3+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Ground & Air)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">2 / 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">8</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special</h4>
+                        <ul>
+                            <li><strong>Detector:</strong> Reveals cloaked/burrowed units within 12"</li>
+                            <li><strong>Automated:</strong> Attacks both players' turns (no -1 hit)</li>
+                            <li><strong>Requires Power:</strong> Must be within 9" of Pylon</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Forge</em></p>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Assimilator</span>
+                        <span style="color: var(--protoss-cyan); font-weight: 700;">40 Minerals</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Construction</div>
+                            <div class="stat-value">1 round</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Shields / Armor</div>
+                            <div class="stat-value">2 / 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">6</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special</h4>
+                        <ul>
+                            <li><strong>Gas Extraction:</strong> Must be built on gas vent</li>
+                            <li><strong>Worker Capacity:</strong> Up to 3 Probes (+5 gas each per round)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="heroes">
+            <h2>Hero Units</h2>
+            <p style="margin-bottom: 30px;">Used in Assassination Scenario only. Each player chooses ONE hero at game start.</p>
+
+            <div class="hero-card">
+                <div class="unit-header" style="border-color: var(--gold);">
+                    <span class="unit-name" style="font-size: 2em;">Artanis</span>
+                    <span style="color: var(--gold); font-weight: 700;">Hierarch</span>
+                </div>
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-wixmp-ed30a86b8c4ca887773594c2.wixmp.com%2Ff%2F1068a520-7c7a-42ee-b51e-d41312ed0234%2Fdhtb1ef-d424b732-09bc-4aa9-9f25-dba43bd79ac6.jpg%3Ftoken%3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzEwNjhhNTIwLTdjN2EtNDJlZS1iNTFlLWQ0MTMxMmVkMDIzNFwvZGh0YjFlZi1kNDI0YjczMi0wOWJjLTRhYTktOWYyNS1kYmE0M2JkNzlhYzYuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.0IhuUMaLSQrQl2fcXSci1MIWEme6vCAUNZF2urJZUqo&f=1&nofb=1&ipt=3b1118652b521b9fcebc2b6d5e1cadbc018b505138c5d73876af4e44ea7da180" alt="Protoss leader" class="unit-image">
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Move</div>
+                        <div class="stat-value">5"</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Type</div>
+                        <div class="stat-value">Light, Biological</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Attacks</div>
+                        <div class="stat-value">3 | To Hit: 2+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Range</div>
+                        <div class="stat-value">Melee</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Shields / Armor</div>
+                        <div class="stat-value">4 / 4+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Wounds</div>
+                        <div class="stat-value">6</div>
+                    </div>
+                </div>
+                <div class="special-abilities">
+                    <h4>Special Abilities</h4>
+                    <ul>
+                        <li><strong>Psionic Blades:</strong> Melee attacks have AP -1</li>
+                        <li><strong>Bring Down the Pylon:</strong> Starts with 1 free Pylon at deployment</li>
+                        <li><strong>Shield Overcharge:</strong> Once per round, restore all shields to one friendly unit within 12"</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-style: italic; color: var(--light-gold);">
+                        <strong>Strategic Role:</strong> Melee powerhouse with support abilities. Best in thick of combat. Free Pylon provides early power advantage.
+                    </p>
+                </div>
+            </div>
+
+            <div class="hero-card">
+                <div class="unit-header" style="border-color: var(--gold);">
+                    <span class="unit-name" style="font-size: 2em;">Zeratul</span>
+                    <span style="color: var(--gold); font-weight: 700;">Dark Templar</span>
+                </div>
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F06%2F68%2F17%2F066817dab4f48459f94cce00f69f44cb.jpg&f=1&nofb=1&ipt=a893ecbf696717d77c153d01e6926540d80170f1b43f40787375c24c26b8ea1c" alt="Mysterious warrior" class="unit-image">
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Move</div>
+                        <div class="stat-value">8"</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Type</div>
+                        <div class="stat-value">Light, Biological, Psionic</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Attacks</div>
+                        <div class="stat-value">2 | To Hit: 2+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Range</div>
+                        <div class="stat-value">Melee</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Shields / Armor</div>
+                        <div class="stat-value">2 / 5+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Wounds</div>
+                        <div class="stat-value">4</div>
+                    </div>
+                </div>
+                <div class="special-abilities">
+                    <h4>Special Abilities</h4>
+                    <ul>
+                        <li><strong>Permanent Cloak:</strong> Always cloaked, requires detection to target</li>
+                        <li><strong>Void Strike:</strong> Attacks ignore armor saves entirely</li>
+                        <li><strong>Blink</strong> (built-in): Can teleport 8" once per activation</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-style: italic; color: var(--light-gold);">
+                        <strong>Strategic Role:</strong> Ultimate assassin. Permanently invisible, devastating melee damage, high mobility. Fragile if detected.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer style="text-align: center; padding: 40px 20px; background: var(--primary-blue); margin-top: 60px; border-top: 2px solid var(--gold);">
+        <p>Next: <a href="zerg.html" style="color: var(--gold);">Zerg Swarm</a> | <a href="reference.html" style="color: var(--gold);">Quick Reference</a></p>
+    </footer>
+
+    <script>
+        function toggleNav() {
+            const nav = document.getElementById('navMenu');
+            nav.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('navMenu');
+            const toggle = document.querySelector('.nav-toggle');
+            
+            if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

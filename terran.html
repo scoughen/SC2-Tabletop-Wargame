@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terran - StarCraft 2 Tabletop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght:400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a2332;
+            --secondary-blue: #2d3e50;
+            --accent-blue: #4a90e2;
+            --gold: #d4af37;
+            --light-gold: #f4e5a0;
+            --text-light: #e0e0e0;
+            --text-dark: #0a0a0a;
+            --card-bg: #1e2936;
+            --terran-red: #c41e3a;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0a0a0a 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--gold);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--secondary-blue) 0%, var(--primary-blue) 100%);
+            padding: 80px 30px 30px;
+            transition: left 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .nav-menu.active {
+            left: 0;
+        }
+
+        .nav-menu h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+        }
+
+        .nav-menu ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-menu ul li a:hover {
+            color: var(--gold);
+            padding-left: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 20px 40px;
+            background: linear-gradient(180deg, rgba(196, 30, 58, 0.2) 0%, transparent 100%);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5em;
+            color: var(--terran-red);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(196, 30, 58, 0.5);
+        }
+
+        .faction-logo {
+            max-width: 200px;
+            height: auto;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .toc {
+            background: var(--card-bg);
+            border: 2px solid var(--terran-red);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .toc h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .toc ul {
+            list-style: none;
+            column-count: 2;
+            column-gap: 30px;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: var(--terran-red);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            color: var(--gold);
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            color: var(--gold);
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--terran-red);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            color: var(--light-gold);
+            margin: 20px 0 15px;
+        }
+
+        .unit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .unit-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--secondary-blue) 100%);
+            border: 2px solid var(--terran-red);
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+        .unit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.4);
+        }
+
+        .unit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--terran-red);
+            padding-bottom: 15px;
+        }
+
+        .unit-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            color: var(--gold);
+        }
+
+        .unit-image {
+            max-width: 200px;
+            height: auto;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .stat-item {
+            background: rgba(74, 144, 226, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .stat-label {
+            font-weight: 700;
+            color: var(--terran-red);
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            color: var(--text-light);
+        }
+
+        .special-abilities {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--secondary-blue);
+        }
+
+        .special-abilities h4 {
+            color: var(--terran-red);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .special-abilities ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .special-abilities li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .special-abilities li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--terran-red);
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(196, 30, 58, 0.2) 0%, var(--card-bg) 100%);
+            border: 3px solid var(--gold);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--secondary-blue);
+        }
+
+        th {
+            background: var(--secondary-blue);
+            font-family: 'Orbitron', sans-serif;
+            color: var(--terran-red);
+        }
+
+        @media print {
+            .nav-toggle, .nav-menu {
+                display: none;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .unit-grid {
+                grid-template-columns: 1fr;
+            }
+            .toc ul {
+                column-count: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="nav-toggle" onclick="toggleNav()">☰ MENU</button>
+    
+    <nav class="nav-menu" id="navMenu">
+        <h3>Navigation</h3>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Core Rules</a></li>
+            <li><a href="terran.html">Terran</a></li>
+            <li><a href="protoss.html">Protoss</a></li>
+            <li><a href="zerg.html">Zerg</a></li>
+            <li><a href="scenarios.html">Scenarios</a></li>
+            <li><a href="reference.html">Quick Reference</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>TERRAN DOMINION</h1>
+        <img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fgetwallpapers.com%2Fwallpaper%2Ffull%2F8%2F0%2F2%2F711314-full-size-starcraft-2-marine-wallpaper-1920x1080-for-phone.jpg&f=1&nofb=1&ipt=7404eb12ebd7e7fc9a55487dcade3350ccb7a9a7a421d9cf27e39614c3a410ab" alt="Terran mechanical units" class="faction-logo">
+        <p style="font-size: 1.2em; margin-top: 20px;">Versatile human forces with mobile bases and adaptive technology</p>
+    </header>
+
+    <div class="container">
+        <div class="toc">
+            <h2>Contents</h2>
+            <ul>
+                <li><a href="#overview">Faction Overview</a></li>
+                <li><a href="#workers">Workers</a></li>
+                <li><a href="#infantry">Infantry Units</a></li>
+                <li><a href="#vehicles">Vehicles</a></li>
+                <li><a href="#air">Air Units</a></li>
+                <li><a href="#buildings">Buildings</a></li>
+                <li><a href="#heroes">Hero Units</a></li>
+            </ul>
+        </div>
+
+        <section id="overview">
+            <h2>Faction Overview</h2>
+            <div class="info-box" style="background: var(--card-bg); padding: 25px; border-left: 4px solid var(--terran-red); margin: 20px 0;">
+                <h3 style="color: var(--terran-red);">Core Philosophy</h3>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Flexibility:</strong> Buildings can relocate, add-ons provide choices</li>
+                    <li><strong>Repair:</strong> SCVs can repair mechanical units and buildings</li>
+                    <li><strong>Mobile Production:</strong> Most production buildings can lift off and move</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="workers">
+            <h2>Workers</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">SCV</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">15 Minerals</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2Ff%2Ff7%2FSC2SCV.jpg%2F600px-SC2SCV.jpg&f=1&nofb=1&ipt=ec21d397efa84765ce1780389cb3ab311cfd0ae6a76dd815b40c864ca206c716" alt="Futuristic construction worker" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">6"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Mechanical</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 5+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">Melee</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">6+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Gather:</strong> +5 Minerals or Gas when adjacent to node/extractor</li>
+                            <li><strong>Construct:</strong> Must remain adjacent to building during construction</li>
+                            <li><strong>Repair:</strong> 5 Minerals per wound healed on mechanical units/buildings</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="infantry">
+            <h2>Infantry Units</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Marine</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">20 Minerals</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2F3%2F33%2FMarine_sc2.png&f=1&nofb=1&ipt=2e7f28b7bee24f4ff248d6de5a710d902692071deaf16eab07927139ff0388ee" alt="Sci-fi soldier" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">6"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">2 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Ground & Air)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">5+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Upgrades</h4>
+                        <ul>
+                            <li><strong>Combat Shield</strong> (40M/40G): +1 Wound</li>
+                            <li><strong>Stim Pack</strong> (40M/40G): +1 attack, +2" move, lose 1 wound</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Marauder</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">40M / 10G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Ff%2Ff2%2FMarauder.png&f=1&nofb=1&ipt=298e6b3bd9f3cab0f9c578ae38ba3c25ee36efd84b36fa65fdc1f12a160a93e6" alt="Heavy armored soldier" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">5"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Armored, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Ground only)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">2</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Strike: Armored</strong> - +1 die vs Armored, ignores saves</li>
+                            <li><strong>Concussive Shells:</strong> Enemy hit has -2" move next activation</li>
+                            <li><strong>Stim Pack</strong> (upgrade): +1 attack, +2" move, lose 1 wound</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Tech Lab</em></p>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Reaper</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">20M / 20G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2F0%2F0a%2FSC2Reaper.jpg&f=1&nofb=1&ipt=9b82ebacd061b01f4b9e549a7f9bcf43748705db389b35e529476537dc5eb41d" alt="Fast combat unit" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">8"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">12" (Ground only)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">5+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Cliff Jumping:</strong> Ignores terrain height changes</li>
+                            <li><strong>Building Attack:</strong> Can damage buildings</li>
+                            <li><strong>KD8 Charge</strong> (once per game): 3 damage to building next round</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Tech Lab</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vehicles">
+            <h2>Vehicle Units</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Hellion</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">40 Minerals</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2F9%2F91%2FSC2Hellion.jpg&f=1&nofb=1&ipt=1b9d3cd003837d5a7734b1e7921e8242b0765c1c3d945fef8b400789cdf49615" alt="Fast vehicle" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">10"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Mechanical</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">12" (8" line)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">5+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">2</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Strike: Light</strong> - +1 die vs Light units, ignores saves</li>
+                            <li><strong>Line Splash:</strong> Hits all models in 8" line</li>
+                            <li><strong>Hellbat Transform</strong> (upgrade 60M/60G): Can become Hellbat</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Siege Tank</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">60M / 50G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-wixmp-ed30a86b8c4ca887773594c2.wixmp.com%2Ff%2F901609f2-8f2d-4bd6-ac25-93514d1a5582%2Fdioclnt-c42188ce-37f1-4d18-823d-93546d3cf0f9.png%2Fv1%2Ffill%2Fw_1280%2Ch_716%2Fstarcraft__siege_tank_render_by_usermicko2002_dioclnt-fullview.png%3Ftoken%3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzE2IiwicGF0aCI6IlwvZlwvOTAxNjA5ZjItOGYyZC00YmQ2LWFjMjUtOTM1MTRkMWE1NTgyXC9kaW9jbG50LWM0MjE4OGNlLTM3ZjEtNGQxOC04MjNkLTkzNTQ2ZDNjZjBmOS5wbmciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.94HZn4wwa_tDdjMUJsfm-XChByIR71Ki6jpt68i6AEE&f=1&nofb=1&ipt=e764f3ff8fdf67c21a8da19069c6978d758ab778c347175ef103db02311038a1" alt="Heavy tank" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">6" / 0" (Siege)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Armored, Mechanical</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | 4+/3+ (Siege)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">12" / 26" (Siege)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">3+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">5</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Siege Mode:</strong> ABILITY order to enter/exit
+                                <ul style="margin-left: 20px;">
+                                    <li>Tank Mode: Mobile, 12" range, 4+</li>
+                                    <li>Siege Mode: Immobile, 26" range, 3+, 3" splash, 6" min range</li>
+                                </ul>
+                            </li>
+                            <li><strong>Splash Damage</strong> (Siege): 3" radius automatic hits</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Tech Lab</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="air">
+            <h2>Air Units</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Medivac</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">40M / 40G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2F6%2F61%2FSC2Medivac.jpg%2F600px-SC2Medivac.jpg&f=1&nofb=1&ipt=a761fc950d7adac98b4f7a69110cd6baf249351268a8097acb5b364e168c230c" alt="Medical transport" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">12" (Flying)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Armored, Mechanical, Flying</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">-</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">3</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Heal:</strong> Up to 3 wounds total to Biological units within 6"</li>
+                            <li><strong>Transport:</strong> 8 infantry, 4 basic vehicles, or 1 advanced vehicle</li>
+                            <li><strong>Ignition Afterburners</strong> (upgrade 40M/40G): +4" move once/round</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Viking</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">60M / 30G</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fpre14.deviantart.net%2Fdd36%2Fth%2Fpre%2Ff%2F2010%2F321%2Fa%2F7%2Fstarcraft_2__terran_viking___by_phillgonzo-d332q04.jpg&f=1&nofb=1&ipt=b031b03a76a9838d9062bdc4c48564a0670cb50dd7e189239dc6b45b3a503e43" alt="Fighter aircraft" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">12" / 10" (Fighter)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Armored, Mechanical</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">2 / 1 (Fighter)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">12" / 18" Air (Fighter)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">3</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Transform:</strong> ABILITY order to switch modes
+                                <ul style="margin-left: 20px;">
+                                    <li>Assault Mode: Ground, 2 attacks, 12" range</li>
+                                    <li>Fighter Mode: Flying, 1 attack, 18" air only</li>
+                                </ul>
+                            </li>
+                            <li><strong>Strike: Armored</strong> (Fighter only): +1 die vs Armored air</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="buildings">
+            <h2>Buildings</h2>
+            
+            <h3>Main Base</h3>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Command Center</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">200 Minerals</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Construction</div>
+                            <div class="stat-value">2 rounds</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Production</div>
+                            <div class="stat-value">3 SCVs/round</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">15</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Income:</strong> +10 Minerals per Economy Phase</li>
+                            <li><strong>Lift Off:</strong> Can fly and relocate (6" move)</li>
+                            <li><strong>Unlocks:</strong> SCVs, Barracks, Supply Depot, Refinery</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Orbital Command</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">+75 Minerals</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Upgrade</div>
+                            <div class="stat-value">Instant</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Production</div>
+                            <div class="stat-value">3 SCVs/round</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">15</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li>All Command Center abilities plus:</li>
+                            <li><strong>Calldown MULE</strong> (every 4 rounds): +15 Minerals for 3 rounds</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Production Buildings</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Building</th>
+                        <th>Cost</th>
+                        <th>Time</th>
+                        <th>Wounds</th>
+                        <th>Produces</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Barracks</td>
+                        <td>75M</td>
+                        <td>1 round</td>
+                        <td>8</td>
+                        <td>Marines, Reapers (4/round)</td>
+                    </tr>
+                    <tr>
+                        <td>Factory</td>
+                        <td>75M/50G</td>
+                        <td>1 round</td>
+                        <td>10</td>
+                        <td>Hellions (2/round)</td>
+                    </tr>
+                    <tr>
+                        <td>Starport</td>
+                        <td>75M/50G</td>
+                        <td>1 round</td>
+                        <td>10</td>
+                        <td>Medivacs, Vikings (1/round)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Add-ons</h3>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Tech Lab</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">25M / 25G</span>
+                    </div>
+                    <div class="special-abilities">
+                        <ul>
+                            <li><strong>Barracks:</strong> Unlocks Marauders</li>
+                            <li><strong>Factory:</strong> Unlocks Siege Tanks</li>
+                            <li><strong>Research Hub:</strong> Can research tech upgrades</li>
+                            <li>Building can produce both basic and advanced units</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Reactor</span>
+                        <span style="color: var(--terran-red); font-weight: 700;">25M / 25G</span>
+                    </div>
+                    <div class="special-abilities">
+                        <ul>
+                            <li><strong>Double Production:</strong>
+                                <ul style="margin-left: 20px;">
+                                    <li>Barracks: 8 infantry/round</li>
+                                    <li>Factory: 4 vehicles/round</li>
+                                    <li>Starport: 2 air units/round</li>
+                                </ul>
+                            </li>
+                            <li>Can only produce basic units</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Support Buildings</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Building</th>
+                        <th>Cost</th>
+                        <th>Wounds</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Engineering Bay</td>
+                        <td>50M</td>
+                        <td>6</td>
+                        <td>Infantry upgrades</td>
+                    </tr>
+                    <tr>
+                        <td>Armory</td>
+                        <td>75M/50G</td>
+                        <td>8</td>
+                        <td>Vehicle/Air upgrades</td>
+                    </tr>
+                    <tr>
+                        <td>Supply Depot</td>
+                        <td>50M</td>
+                        <td>4</td>
+                        <td>Wall building</td>
+                    </tr>
+                    <tr>
+                        <td>Refinery</td>
+                        <td>40M</td>
+                        <td>6</td>
+                        <td>Gas extraction (3 workers max)</td>
+                    </tr>
+                    <tr>
+                        <td>Bunker</td>
+                        <td>50M</td>
+                        <td>10</td>
+                        <td>Garrison 4 infantry (+1 To Hit)</td>
+                    </tr>
+                    <tr>
+                        <td>Missile Turret</td>
+                        <td>50M</td>
+                        <td>5</td>
+                        <td>Anti-air + Detector (12")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="heroes">
+            <h2>Hero Units</h2>
+            <p style="margin-bottom: 30px;">Used in Assassination Scenario only. Each player chooses ONE hero at game start.</p>
+
+            <div class="hero-card">
+                <div class="unit-header" style="border-color: var(--gold);">
+                    <span class="unit-name" style="font-size: 2em;">Jim Raynor</span>
+                    <span style="color: var(--gold); font-weight: 700;">Marine Commander</span>
+                </div>
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F0f%2F4c%2Fe6%2F0f4ce6dbdb289178c8c2fb6b300d0b39.jpg&f=1&nofb=1&ipt=6309aac0fbfe0443e957f7db734eafa37b0a3f78621aef052f31eb8e8f06c594" alt="Commander portrait" class="unit-image">
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Move</div>
+                        <div class="stat-value">6"</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Type</div>
+                        <div class="stat-value">Light, Biological</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Attacks</div>
+                        <div class="stat-value">3 | To Hit: 3+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Range</div>
+                        <div class="stat-value">18" (Ground & Air)</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Armor Save</div>
+                        <div class="stat-value">4+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Wounds</div>
+                        <div class="stat-value">8</div>
+                    </div>
+                </div>
+                <div class="special-abilities">
+                    <h4>Special Abilities</h4>
+                    <ul>
+                        <li><strong>Inspire:</strong> All friendly infantry within 12" gain +1 To Hit</li>
+                        <li><strong>Veteran:</strong> Re-roll failed hits once per activation</li>
+                        <li><strong>Combat Shield:</strong> Already included (8 wounds)</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-style: italic; color: var(--light-gold);">
+                        <strong>Strategic Role:</strong> Frontline commander who buffs nearby infantry. Position in center of Marine/Marauder forces.
+                    </p>
+                </div>
+            </div>
+
+            <div class="hero-card">
+                <div class="unit-header" style="border-color: var(--gold);">
+                    <span class="unit-name" style="font-size: 2em;">Sarah Kerrigan</span>
+                    <span style="color: var(--gold); font-weight: 700;">Ghost Operative</span>
+                </div>
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fba%2Fc9%2F28%2Fbac9281427c6dd3f7665ad4f9fb6de24--starcraft--ghosts.jpg&f=1&nofb=1&ipt=b39874062edd80bdf36fd1a8fe742f8a80667dbbb1af2221d9649ecd51f589c8" alt="Female operative" class="unit-image">
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Move</div>
+                        <div class="stat-value">8"</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Type</div>
+                        <div class="stat-value">Light, Biological, Psionic</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Attacks</div>
+                        <div class="stat-value">2 | To Hit: 3+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Range</div>
+                        <div class="stat-value">24" (Ground only)</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Armor Save</div>
+                        <div class="stat-value">5+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Wounds</div>
+                        <div class="stat-value">6</div>
+                    </div>
+                </div>
+                <div class="special-abilities">
+                    <h4>Special Abilities</h4>
+                    <ul>
+                        <li><strong>Cloak:</strong> Use ABILITY order to cloak (requires detection to target)</li>
+                        <li><strong>Snipe:</strong> Extra dice vs Biological targets, Strike hits ignore saves</li>
+                        <li><strong>Psionic Storm</strong> (once per game): 3" radius, all enemy units take 1 auto hit</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-style: italic; color: var(--light-gold);">
+                        <strong>Strategic Role:</strong> Stealth assassin for eliminating high-value targets. Requires careful positioning.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer style="text-align: center; padding: 40px 20px; background: var(--primary-blue); margin-top: 60px; border-top: 2px solid var(--gold);">
+        <p>Next: <a href="protoss.html" style="color: var(--gold);">Protoss Forces</a> | <a href="reference.html" style="color: var(--gold);">Quick Reference</a></p>
+    </footer>
+
+    <script>
+        function toggleNav() {
+            const nav = document.getElementById('navMenu');
+            nav.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('navMenu');
+            const toggle = document.querySelector('.nav-toggle');
+            
+            if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

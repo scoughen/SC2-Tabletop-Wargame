@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenarios - StarCraft 2 Tabletop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a2332;
+            --secondary-blue: #2d3e50;
+            --accent-blue: #4a90e2;
+            --gold: #d4af37;
+            --light-gold: #f4e5a0;
+            --text-light: #e0e0e0;
+            --text-dark: #0a0a0a;
+            --card-bg: #1e2936;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0a0a0a 100%);
+            color: var(--text-light);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        .nav-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--gold);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--secondary-blue) 0%, var(--primary-blue) 100%);
+            padding: 80px 30px 30px;
+            transition: left 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .nav-menu.active {
+            left: 0;
+        }
+
+        .nav-menu h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+        }
+
+        .nav-menu ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-menu ul li a:hover {
+            color: var(--gold);
+            padding-left: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 20px 40px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3em;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .scenario-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--secondary-blue) 100%);
+            border: 2px solid var(--accent-blue);
+            border-radius: 10px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.4);
+            border-color: var(--gold);
+        }
+
+        .scenario-header {
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .scenario-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2em;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .scenario-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            background: rgba(74, 144, 226, 0.2);
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .meta-label {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--light-gold);
+            margin: 20px 0 10px;
+            font-size: 1.3em;
+        }
+
+        .victory-list {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 15px 15px 15px 25px;
+            margin: 15px 0;
+        }
+
+        .victory-list li {
+            margin-bottom: 8px;
+        }
+
+        ul {
+            margin-left: 20px;
+        }
+
+        .special-rules {
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid var(--accent-blue);
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .strategic-note {
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-blue);
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--secondary-blue);
+        }
+
+        th {
+            background: var(--secondary-blue);
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+        }
+
+        @media print {
+            .nav-toggle, .nav-menu {
+                display: none;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .scenario-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="nav-toggle" onclick="toggleNav()">☰ MENU</button>
+    
+    <nav class="nav-menu" id="navMenu">
+        <h3>Navigation</h3>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Core Rules</a></li>
+            <li><a href="terran.html">Terran</a></li>
+            <li><a href="protoss.html">Protoss</a></li>
+            <li><a href="zerg.html">Zerg</a></li>
+            <li><a href="scenarios.html">Scenarios</a></li>
+            <li><a href="reference.html">Quick Reference</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Scenarios</h1>
+        <p style="font-size: 1.2em; margin-top: 20px;">Different victory conditions and gameplay modes</p>
+    </header>
+
+    <div class="container">
+        <div class="scenario-grid">
+            <!-- Scenario 1: Annihilation -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">1. Annihilation</div>
+                    <div class="scenario-meta">
+                        <span class="meta-item"><span class="meta-label">Time:</span> 45-60 min</span>
+                        <span class="meta-item"><span class="meta-label">Complexity:</span> Low</span>
+                    </div>
+                </div>
+
+                <h3>Victory Conditions</h3>
+                <div class="victory-list">
+                    <ul>
+                        <li><strong>Primary:</strong> Destroy enemy's Main Base Building (instant victory)</li>
+                        <li><strong>Secondary:</strong> Most Victory Points at Round 10</li>
+                    </ul>
+                </div>
+
+                <h3>Victory Points</h3>
+                <ul>
+                    <li>Enemy Main Base Destroyed: Instant victory</li>
+                    <li>Destroy Production Building: 2 VP each</li>
+                    <li>Destroy Tech Building: 3 VP each</li>
+                    <li>Kill 10 Supply Worth of Units: 1 VP</li>
+                    <li>Control Expansion at game end: 1 VP</li>
+                </ul>
+
+                <h3>Setup</h3>
+                <ul>
+                    <li>Standard 3' × 3' board with 5 expansion locations</li>
+                    <li>Both players deploy in opposite corners</li>
+                    <li>Starting resources: 200 Minerals, 0 Gas</li>
+                </ul>
+
+                <div class="special-rules">
+                    <h3>Special Rules</h3>
+                    <ul>
+                        <li><strong>Total War:</strong> No restrictions on targeting buildings</li>
+                        <li><strong>Decisive Strike:</strong> Destroying enemy main base ends game immediately</li>
+                        <li><strong>Harassment Matters:</strong> Killing workers counts toward supply VP</li>
+                    </ul>
+                </div>
+
+                <div class="strategic-note">
+                    <strong>Strategic Notes:</strong> Most straightforward scenario - pure military conflict. Defensive structures critical to protect main base. Balance between offense (kill their base) and defense (protect yours).
+                </div>
+            </div>
+
+            <!-- Scenario 2: Control Points -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">2. Control Points</div>
+                    <div class="scenario-meta">
+                        <span class="meta-item"><span class="meta-label">Time:</span> 50-60 min</span>
+                        <span class="meta-item"><span class="meta-label">Complexity:</span> Medium</span>
+                    </div>
+                </div>
+
+                <h3>Victory Conditions</h3>
+                <div class="victory-list">
+                    <ul>
+                        <li><strong>Primary:</strong> Control 3+ Control Points at end of any round (instant victory)</li>
+                        <li><strong>Secondary:</strong> Most Victory Points at Round 10</li>
+                    </ul>
+                </div>
+
+                <h3>Victory Points</h3>
+                <ul>
+                    <li>Control Point Held: 2 VP per round</li>
+                    <li>Destroy Enemy Building: 1 VP</li>
+                    <li>Kill 10 Supply Worth of Units: 1 VP</li>
+                </ul>
+
+                <h3>Control Points (5 total)</h3>
+                <ul>
+                    <li>Center Expansion (18", 18")</li>
+                    <li>Player 1 Mid-Field (12", 24")</li>
+                    <li>Player 2 Mid-Field (24", 12")</li>
+                    <li>Player 1 Forward (6", 30")</li>
+                    <li>Player 2 Forward (30", 6")</li>
+                </ul>
+
+                <h3>Controlling a Point</h3>
+                <ul>
+                    <li>Have more models within 6" than opponent</li>
+                    <li>Workers count for control</li>
+                    <li>Measured during Production Phase</li>
+                    <li>Contested if equal numbers (no VP awarded)</li>
+                    <li>Base building counts as 5 models for control</li>
+                </ul>
+
+                <div class="strategic-note">
+                    <strong>Strategic Notes:</strong> Rewards map control over pure combat power. Mobile units excel. Defensive structures can "hold" points cheaply. Expanding to control points serves dual purpose.
+                </div>
+            </div>
+
+            <!-- Scenario 3: Resource Rush -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">3. Resource Rush</div>
+                    <div class="scenario-meta">
+                        <span class="meta-item"><span class="meta-label">Time:</span> 45-55 min</span>
+                        <span class="meta-item"><span class="meta-label">Complexity:</span> Medium</span>
+                    </div>
+                </div>
+
+                <h3>Victory Conditions</h3>
+                <div class="victory-list">
+                    <ul>
+                        <li><strong>Primary:</strong> First to accumulate 1000 total minerals collected wins</li>
+                        <li><strong>Secondary:</strong> Most resources collected by Round 10</li>
+                    </ul>
+                </div>
+
+                <h3>Resource Tracking</h3>
+                <ul>
+                    <li>Track <strong>total resources collected</strong> separately from current stockpile</li>
+                    <li>Spending resources doesn't reduce victory progress</li>
+                    <li>Example: Collect 500M, spend 300M → 500M toward 1000M goal</li>
+                </ul>
+
+                <h3>Setup</h3>
+                <ul>
+                    <li>Standard 3' × 3' board with 7 expansion locations</li>
+                    <li><strong>Modified Starting Resources:</strong> 100 Minerals, 0 Gas (encourages faster expansion)</li>
+                </ul>
+
+                <h3>Economic Targets by Round</h3>
+                <ul>
+                    <li>Round 3: ~250M collected</li>
+                    <li>Round 5: ~450M collected</li>
+                    <li>Round 7: ~700M collected</li>
+                    <li>Round 10: 1000M (victory threshold)</li>
+                </ul>
+
+                <div class="strategic-note">
+                    <strong>Strategic Notes:</strong> Defensive players can thrive. Worker production and expansion timing critical. Harassment attacks very effective. Military just needs to defend, not dominate.
+                </div>
+            </div>
+
+            <!-- Scenario 4: Assassination -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">4. Assassination</div>
+                    <div class="scenario-meta">
+                        <span class="meta-item"><span class="meta-label">Time:</span> 30-45 min</span>
+                        <span class="meta-item"><span class="meta-label">Complexity:</span> Medium</span>
+                    </div>
+                </div>
+
+                <h3>Victory Conditions</h3>
+                <div class="victory-list">
+                    <ul>
+                        <li><strong>Primary:</strong> Kill enemy Hero Unit (instant victory)</li>
+                        <li><strong>Secondary:</strong> Most Victory Points at Round 10</li>
+                    </ul>
+                </div>
+
+                <h3>Victory Points</h3>
+                <ul>
+                    <li>Kill Enemy Hero: Instant victory</li>
+                    <li>Wound Enemy Hero: 1 VP per wound dealt (cumulative)</li>
+                    <li>Destroy Building: 1 VP</li>
+                    <li>Kill 10 Supply Worth of Units: 1 VP</li>
+                </ul>
+
+                <h3>Hero Selection</h3>
+                <p>Each player chooses ONE hero at game start. See faction pages for hero stats:</p>
+                <ul>
+                    <li><strong>Terran:</strong> Jim Raynor, Sarah Kerrigan</li>
+                    <li><strong>Protoss:</strong> Artanis, Zeratul</li>
+                    <li><strong>Zerg:</strong> Zagara, Abathur</li>
+                </ul>
+
+                <h3>Setup</h3>
+                <ul>
+                    <li>Standard 3' × 3' board</li>
+                    <li>Each player deploys chosen hero in deployment zone</li>
+                    <li>Starting resources: 200 Minerals, 0 Gas</li>
+                    <li>Hero starts adjacent to main structure</li>
+                </ul>
+
+                <div class="strategic-note">
+                    <strong>Strategic Notes:</strong> High-risk, high-reward. Assassination attempts vs hero protection. Heroes powerful but vulnerable. Cloaked heroes require detection.
+                </div>
+            </div>
+
+            <!-- Scenario 5: Hold the Line -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">5. Hold the Line</div>
+                    <div class="scenario-meta">
+                        <span class="meta-item"><span class="meta-label">Time:</span> 50-60 min</span>
+                        <span class="meta-item"><span class="meta-label">Complexity:</span> High</span>
+                    </div>
+                </div>
+
+                <h3>Players</h3>
+                <p>One player is <strong>Defender</strong>, one is <strong>Attacker</strong> (decide randomly or by agreement)</p>
+
+                <h3>Victory Conditions</h3>
+                <div class="victory-list">
+                    <strong>Defender Wins If:</strong>
+                    <ul>
+                        <li>Prevents Attacker from destroying all 3 Objectives by Round 10</li>
+                        <li>OR destroys Attacker's main base</li>
+                    </ul>
+                    <strong>Attacker Wins If:</strong>
+                    <ul>
+                        <li>Destroys all 3 Defender's Objectives before Round 10 ends</li>
+                        <li>OR destroys Defender's main base</li>
+                    </ul>
+                </div>
+
+                <h3>Defender Setup</h3>
+                <ul>
+                    <li>Deploys in one corner (12" × 12" deployment zone)</li>
+                    <li><strong>Starting Resources:</strong> 300 Minerals, 100 Gas (extra for defense)</li>
+                    <li><strong>Starting Army:</strong> 500 points of units + buildings</li>
+                    <li><strong>Objectives:</strong> Places 3 objective buildings in deployment zone
+                        <ul>
+                            <li>Each objective: Armor Save 4+, 15 Wounds</li>
+                            <li>Cannot move, cannot attack</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3>Attacker Setup</h3>
+                <ul>
+                    <li>Deploys in opposite corner</li>
+                    <li><strong>Starting Resources:</strong> 200 Minerals, 0 Gas (standard)</li>
+                    <li><strong>Starting Army:</strong> 700 points of units + buildings (larger force)</li>
+                    <li><strong>Reinforcement Advantage:</strong> New units deploy from board edge nearest Defender</li>
+                </ul>
+
+                <div class="strategic-note">
+                    <strong>Strategic Notes:</strong> Defender builds defensive structures. Attacker pushes aggressively with superior numbers. Siege units excel for Attacker. Defender funnels attackers through choke points.
+                </div>
+            </div>
+
+            <!-- Scenario 6: Escalation -->
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <div class="scenario-title">6. Escalation</div>
+                    <div class="scenario-meta">
+                        <span class="meta-item"><span class="meta-label">Time:</span> 60-75 min</span>
+                        <span class="meta-item"><span class="meta-label">Complexity:</span> High</span>
+                    </div>
+                </div>
+
+                <h3>Victory Conditions</h3>
+                <div class="victory-list">
+                    <ul>
+                        <li><strong>Primary:</strong> Most Victory Points at Round 10</li>
+                        <li><strong>Tiebreaker:</strong> Control majority of expansions</li>
+                    </ul>
+                </div>
+
+                <h3>Victory Points</h3>
+                <ul>
+                    <li>Destroy Building: 2 VP</li>
+                    <li>Control Expansion: 1 VP per round</li>
+                    <li>Kill 10 Supply Worth of Units: 1 VP</li>
+                    <li>First Blood: Kill first enemy unit = 1 VP (one-time)</li>
+                    <li>Tech Advantage: First to reach Tier 3 tech = 2 VP (one-time)</li>
+                </ul>
+
+                <h3>Escalation Phases</h3>
+                
+                <div class="special-rules">
+                    <h4>Phase 1: Early Game (Rounds 1-3)</h4>
+                    <ul>
+                        <li><strong>Resource Modifier:</strong> Standard income</li>
+                        <li><strong>Restrictions:</strong>
+                            <ul>
+                                <li>Cannot build Tier 3 units</li>
+                                <li>Maximum 1 expansion allowed</li>
+                                <li>Focus on basic infantry and economy</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h4>Phase 2: Mid Game (Rounds 4-7)</h4>
+                    <ul>
+                        <li><strong>Resource Modifier:</strong> +50% income (multiply all resource generation by 1.5×)</li>
+                        <li><strong>Restrictions Lifted:</strong>
+                            <ul>
+                                <li>Tier 2 and Tier 3 units available</li>
+                                <li>Maximum 3 expansions allowed</li>
+                                <li>Tech buildings unlocked</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h4>Phase 3: Late Game (Rounds 8-10)</h4>
+                    <ul>
+                        <li><strong>Resource Modifier:</strong> +100% income (double all resource generation)</li>
+                        <li><strong>Restrictions:</strong> None</li>
+                        <li><strong>Max Expansions:</strong> Unlimited</li>
+                    </ul>
+                </div>
+
+                <h3>Tier Restrictions</h3>
+                <ul>
+                    <li><strong>Tier 1 (Rounds 1-3):</strong> Marines/Zealots/Zerglings, Reapers, Queens, Probes/SCVs/Drones</li>
+                    <li><strong>Tier 2 (Rounds 4+):</strong> Marauders, Hellions, Medivacs, Vikings, Roaches, Hydralisks, Mutalisks, Stalkers, Sentries, Phoenix, Immortals</li>
+                    <li><strong>Tier 3 (Rounds 4+):</strong> Siege Tanks, Thors, Banshees, Ravens, Banelings, Ultralisks, Corruptors, Brood Lords, Colossi, Void Rays, High Templar, Archons</li>
+                </ul>
+
+                <div class="strategic-note">
+                    <strong>Strategic Notes:</strong> Early game focuses on economy. Mid game rewards tech investment. Late game sees massive battles with elite units. Income doubling makes reinforcements fast.
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reference Table -->
+        <h2 style="font-family: 'Orbitron', sans-serif; color: var(--gold); margin: 60px 0 30px; text-align: center; font-size: 2.5em;">Scenario Quick Reference</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Scenario</th>
+                    <th>Game Length</th>
+                    <th>Complexity</th>
+                    <th>Focus</th>
+                    <th>Best For</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Annihilation</td>
+                    <td>45-60 min</td>
+                    <td>Low</td>
+                    <td>Combat</td>
+                    <td>New players, combat focus</td>
+                </tr>
+                <tr>
+                    <td>Control Points</td>
+                    <td>50-60 min</td>
+                    <td>Medium</td>
+                    <td>Territory</td>
+                    <td>Tactical positioning</td>
+                </tr>
+                <tr>
+                    <td>Resource Rush</td>
+                    <td>45-55 min</td>
+                    <td>Medium</td>
+                    <td>Economy</td>
+                    <td>Macro gameplay</td>
+                </tr>
+                <tr>
+                    <td>Assassination</td>
+                    <td>30-45 min</td>
+                    <td>Medium</td>
+                    <td>Hero Combat</td>
+                    <td>Narrative games</td>
+                </tr>
+                <tr>
+                    <td>Hold the Line</td>
+                    <td>50-60 min</td>
+                    <td>High</td>
+                    <td>Asymmetric</td>
+                    <td>Experienced players</td>
+                </tr>
+                <tr>
+                    <td>Escalation</td>
+                    <td>60-75 min</td>
+                    <td>High</td>
+                    <td>Progressive</td>
+                    <td>Full game experience</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer style="text-align: center; padding: 40px 20px; background: var(--primary-blue); margin-top: 60px; border-top: 2px solid var(--gold);">
+        <p><a href="reference.html" style="color: var(--gold);">Quick Reference</a> | <a href="index.html" style="color: var(--gold);">Return to Home</a></p>
+    </footer>
+
+    <script>
+        function toggleNav() {
+            const nav = document.getElementById('navMenu');
+            nav.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('navMenu');
+            const toggle = document.querySelector('.nav-toggle');
+            
+            if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

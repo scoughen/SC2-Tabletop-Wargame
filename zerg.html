@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zerg - StarCraft 2 Tabletop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a2332;
+            --secondary-blue: #2d3e50;
+            --accent-blue: #4a90e2;
+            --gold: #d4af37;
+            --light-gold: #f4e5a0;
+            --text-light: #e0e0e0;
+            --text-dark: #0a0a0a;
+            --card-bg: #1e2936;
+            --zerg-purple: #8b00ff;
+            --zerg-magenta: #ff00ff;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0a0a0a 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--gold);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--secondary-blue) 0%, var(--primary-blue) 100%);
+            padding: 80px 30px 30px;
+            transition: left 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .nav-menu.active {
+            left: 0;
+        }
+
+        .nav-menu h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+        }
+
+        .nav-menu ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-menu ul li a:hover {
+            color: var(--gold);
+            padding-left: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 20px 40px;
+            background: linear-gradient(180deg, rgba(139, 0, 255, 0.2) 0%, transparent 100%);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5em;
+            color: var(--zerg-magenta);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+        }
+
+        .faction-logo {
+            max-width: 200px;
+            height: auto;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .toc {
+            background: var(--card-bg);
+            border: 2px solid var(--zerg-purple);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .toc h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .toc ul {
+            list-style: none;
+            column-count: 2;
+            column-gap: 30px;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: var(--zerg-magenta);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            color: var(--gold);
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            color: var(--gold);
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--zerg-purple);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            color: var(--light-gold);
+            margin: 20px 0 15px;
+        }
+
+        .unit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .unit-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--secondary-blue) 100%);
+            border: 2px solid var(--zerg-purple);
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(139, 0, 255, 0.2);
+        }
+
+        .unit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.4);
+            border-color: var(--zerg-magenta);
+        }
+
+        .unit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--zerg-purple);
+            padding-bottom: 15px;
+        }
+
+        .unit-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            color: var(--gold);
+        }
+
+        .unit-image {
+            max-width: 200px;
+            height: auto;
+            border-radius: 5px;
+            margin: 15px 0;
+            border: 2px solid var(--zerg-magenta);
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .stat-item {
+            background: rgba(139, 0, 255, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid var(--zerg-purple);
+        }
+
+        .stat-label {
+            font-weight: 700;
+            color: var(--zerg-magenta);
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            color: var(--text-light);
+        }
+
+        .special-abilities {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--secondary-blue);
+        }
+
+        .special-abilities h4 {
+            color: var(--zerg-magenta);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .special-abilities ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .special-abilities li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .special-abilities li:before {
+            content: "◆";
+            position: absolute;
+            left: 0;
+            color: var(--zerg-magenta);
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, rgba(139, 0, 255, 0.2) 0%, var(--card-bg) 100%);
+            border: 3px solid var(--gold);
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--secondary-blue);
+        }
+
+        th {
+            background: var(--secondary-blue);
+            font-family: 'Orbitron', sans-serif;
+            color: var(--zerg-magenta);
+        }
+
+        @media print {
+            .nav-toggle, .nav-menu {
+                display: none;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .unit-grid {
+                grid-template-columns: 1fr;
+            }
+            .toc ul {
+                column-count: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="nav-toggle" onclick="toggleNav()">☰ MENU</button>
+    
+    <nav class="nav-menu" id="navMenu">
+        <h3>Navigation</h3>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Core Rules</a></li>
+            <li><a href="terran.html">Terran</a></li>
+            <li><a href="protoss.html">Protoss</a></li>
+            <li><a href="zerg.html">Zerg</a></li>
+            <li><a href="scenarios.html">Scenarios</a></li>
+            <li><a href="reference.html">Quick Reference</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>ZERG SWARM</h1>
+        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2FRJFVkmn.jpg&f=1&nofb=1&ipt=76879a5e949f288895cc7b807a5ee6b134079db27e74a501f54c0787ef36f975" alt="Organic alien forms" class="faction-logo">
+        <p style="font-size: 1.2em; margin-top: 20px;">Adaptable swarm with rapid production and regeneration</p>
+    </header>
+
+    <div class="container">
+        <div class="toc">
+            <h2>Contents</h2>
+            <ul>
+                <li><a href="#overview">Faction Overview</a></li>
+                <li><a href="#workers">Workers</a></li>
+                <li><a href="#hatchery">Hatchery Units</a></li>
+                <li><a href="#lair">Lair/Hive Units</a></li>
+                <li><a href="#buildings">Buildings</a></li>
+                <li><a href="#heroes">Hero Units</a></li>
+            </ul>
+        </div>
+
+        <section id="overview">
+            <h2>Faction Overview</h2>
+            <div class="info-box" style="background: var(--card-bg); padding: 25px; border-left: 4px solid var(--zerg-magenta); margin: 20px 0;">
+                <h3 style="color: var(--zerg-magenta);">Core Philosophy</h3>
+                <ul style="margin-left: 20px;">
+                    <li><strong>Adaptation:</strong> Flexible production via Larva system</li>
+                    <li><strong>Creep:</strong> Buildings must be on creep, spreads across map</li>
+                    <li><strong>Regeneration:</strong> Buildings and units heal over time</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="workers">
+            <h2>Workers</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Drone</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">15M | 1 Larva</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2Fc%2Fcf%2FSC2Drone.jpg%2F600px-SC2Drone.jpg&f=1&nofb=1&ipt=4e433cd1ecd064eb9830385d2b797271bb4c4b228b7de945b599b4c618245744" alt="Organic worker" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">6"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 5+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">Melee</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">6+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Gather:</strong> +5 Minerals or Gas when adjacent to node/extractor</li>
+                            <li><strong>Mutate:</strong> Consumed when building starts (becomes the building)</li>
+                            <li>Must build on creep</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hatchery">
+            <h2>Hatchery Units</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Zergling (Pair)</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">20M | 1 Larva</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2F4%2F49%2FSC2Zergling.jpg%2F600px-SC2Zergling.jpg&f=1&nofb=1&ipt=e5c73922a47662e7a3a59129d6a25d8f338471323ccd02a0b82cd693e0cdf52e" alt="Fast predator" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">8"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">Melee</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">6+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Upgrades</h4>
+                        <ul>
+                            <li><strong>Produced in Pairs:</strong> Always get 2 for 20M</li>
+                            <li><strong>Metabolic Boost</strong> (40M/40G): +2" move (becomes 10")</li>
+                            <li><strong>Adrenal Glands</strong> (80M/80G, Hive): +1 attack (becomes 2)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Roach</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">30M/10G | 1 Larva</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2F2%2F22%2FSC2Roach.jpg%2F600px-SC2Roach.jpg&f=1&nofb=1&ipt=15fbea61566cd515ba89baa3ab2214f6784ae91bebfb32c82b3810b3e39d4fd2" alt="Armored creature" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">5"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Armored, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">12" (Ground only)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">3</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Upgrades</h4>
+                        <ul>
+                            <li><strong>Glial Reconstitution</strong> (40M/40G): +2" move (becomes 7")</li>
+                            <li><strong>Tunneling Claws</strong> (60M/60G): Can move while burrowed at 3"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Hydralisk</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">40M/20G | 1 Larva</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2F4%2F4b%2FSC2Hydralisk.jpg&f=1&nofb=1&ipt=4ab588aa1c36d8dd0eda042538c2d321c1b184b17d7f548adec5ec0e5d918150" alt="Ranged attacker" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">5"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">2 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Ground & Air)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">6+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">2</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Upgrades</h4>
+                        <ul>
+                            <li><strong>Muscular Augments</strong> (40M/40G): +2" move (becomes 7")</li>
+                            <li><strong>Grooved Spines</strong> (60M/60G): +6" range (becomes 24")</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Hydralisk Den (Lair)</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lair">
+            <h2>Lair/Hive Units</h2>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Queen</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">75M | 1 Larva</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.gamereplays.org%2Fcommunity%2Fuploads%2Fpost-118999-1288899452.png&f=1&nofb=1&ipt=0feaa3e307f04a4809a54dba8ce130cdddc5a60620fd0fd8a5501ded2c0e8c91" alt="Support creature" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">4"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Armored, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Ground & Air)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">5</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Spawn Creep Tumor:</strong> Once per activation, place within 3"</li>
+                            <li><strong>Transfusion:</strong> Instead of attacking, heal 2 wounds on Biological unit/building within 6"</li>
+                            <li><strong>Inject Larva:</strong> Instead of attacking, target Hatchery within 6" generates +3 larva immediately</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Baneling</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">10M/10G (morph)</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2F6%2F6e%2FSC2Baneling.jpg%2F600px-SC2Baneling.jpg&f=1&nofb=1&ipt=62562166c6b613c5d3e84a1d1b224e972fcc0f66f503ebdf967d3883fab6bc66" alt="Explosive organism" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">7"</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Biological</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">Special</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">Melee</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">6+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Volatile Burst:</strong> When dies, 2" radius splash, all enemies take 2 auto hits</li>
+                            <li><strong>Rolling:</strong> Can move through friendly units</li>
+                            <li><strong>Centrifugal Hooks</strong> (upgrade 60M/60G): +2" move (becomes 9")</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Morphs from Zergling, requires Baneling Nest</em></p>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Mutalisk</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">40M/40G | 1 Larva</span>
+                    </div>
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2F6%2F63%2FSC2Mutalisk.jpg%2F600px-SC2Mutalisk.jpg&f=1&nofb=1&ipt=aedc758190c8e25f4ae202d0274360bff77f0d790de5d64f2b8dcce17c7838f0" alt="Flying creature" class="unit-image">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Move</div>
+                            <div class="stat-value">12" (Flying)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Type</div>
+                            <div class="stat-value">Light, Biological, Flying</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">12" (Ground & Air)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">6+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">2</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Glaive Wurm:</strong> After hitting primary target, attack bounces to 1 additional target within 6" at -1 To Hit</li>
+                        </ul>
+                        <p style="margin-top: 10px; color: var(--light-gold);"><em>Requires Spire</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="buildings">
+            <h2>Buildings</h2>
+            
+            <h3>Main Base</h3>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Hatchery</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">150 Minerals</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Construction</div>
+                            <div class="stat-value">2 rounds</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Production</div>
+                            <div class="stat-value">Larva System</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">12</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special Abilities</h4>
+                        <ul>
+                            <li><strong>Income:</strong> +10 Minerals per Economy Phase</li>
+                            <li><strong>Larva Generation:</strong> +3 larva per Production Phase (max 9 stored)</li>
+                            <li><strong>Creep Spread:</strong> 6" radius of creep</li>
+                            <li><strong>Regeneration:</strong> Heals 2 wounds per Production Phase</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Lair / Hive</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">+75M/50G / +100M/75G</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Upgrade Time</div>
+                            <div class="stat-value">1 round each</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">12</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special</h4>
+                        <ul>
+                            <li>All Hatchery abilities plus:</li>
+                            <li><strong>Lair:</strong> Unlocks Hydralisk Den, Spire, advanced tech</li>
+                            <li><strong>Hive:</strong> Unlocks highest-tier tech, Adrenal Glands</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Production Buildings</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Building</th>
+                        <th>Cost</th>
+                        <th>Time</th>
+                        <th>Wounds</th>
+                        <th>Unlocks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Spawning Pool</td>
+                        <td>100M</td>
+                        <td>1 round</td>
+                        <td>6</td>
+                        <td>Zerglings, Queens</td>
+                    </tr>
+                    <tr>
+                        <td>Roach Warren</td>
+                        <td>75M</td>
+                        <td>1 round</td>
+                        <td>6</td>
+                        <td>Roaches</td>
+                    </tr>
+                    <tr>
+                        <td>Baneling Nest</td>
+                        <td>50M/25G</td>
+                        <td>1 round</td>
+                        <td>4</td>
+                        <td>Baneling morph</td>
+                    </tr>
+                    <tr>
+                        <td>Hydralisk Den</td>
+                        <td>50M/50G</td>
+                        <td>1 round</td>
+                        <td>6</td>
+                        <td>Hydralisks (Lair req.)</td>
+                    </tr>
+                    <tr>
+                        <td>Spire</td>
+                        <td>100M/100G</td>
+                        <td>1 round</td>
+                        <td>8</td>
+                        <td>Mutalisks (Lair req.)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Support Buildings</h3>
+            <div class="unit-grid">
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Creep Tumor</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">Free (Queen)</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">None</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">1</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special</h4>
+                        <ul>
+                            <li><strong>Creep Spread:</strong> 6" radius</li>
+                            <li><strong>Spawn Tumor:</strong> Once per round, spawn another within 6"</li>
+                            <li><strong>Invisible:</strong> Cannot be targeted without detection</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Spine Crawler</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">50 Minerals</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 3+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Ground only)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">6</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special</h4>
+                        <ul>
+                            <li><strong>Strike: Light</strong> - +1 die vs Light, ignores saves</li>
+                            <li><strong>Uproot/Root:</strong> Can move 4" while uprooted, re-root takes 1 round</li>
+                            <li><strong>Automated:</strong> Attacks both players' turns</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="unit-card">
+                    <div class="unit-header">
+                        <span class="unit-name">Spore Crawler</span>
+                        <span style="color: var(--zerg-magenta); font-weight: 700;">50 Minerals</span>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Attacks</div>
+                            <div class="stat-value">1 | To Hit: 4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range</div>
+                            <div class="stat-value">18" (Air only)</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">Armor Save</div>
+                            <div class="stat-value">4+</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Wounds</div>
+                            <div class="stat-value">6</div>
+                        </div>
+                    </div>
+                    <div class="special-abilities">
+                        <h4>Special</h4>
+                        <ul>
+                            <li><strong>Detector:</strong> Reveals cloaked units within 12"</li>
+                            <li><strong>Uproot/Root:</strong> Can move 4" while uprooted</li>
+                            <li><strong>Automated:</strong> Attacks both players' turns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="heroes">
+            <h2>Hero Units</h2>
+            <p style="margin-bottom: 30px;">Used in Assassination Scenario only. Each player chooses ONE hero at game start.</p>
+
+            <div class="hero-card">
+                <div class="unit-header" style="border-color: var(--gold);">
+                    <span class="unit-name" style="font-size: 2em;">Zagara</span>
+                    <span style="color: var(--gold); font-weight: 700;">Broodmother</span>
+                </div>
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fliquipedia.net%2Fcommons%2Fimages%2Fthumb%2F2%2F2d%2FZagara.jpg%2F600px-Zagara.jpg&f=1&nofb=1&ipt=4fc0ba1f970a6eb624001ae71eed4e2fd298e192f443fec5d5834d5fcb049590" alt="Zerg queen" class="unit-image">
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Move</div>
+                        <div class="stat-value">6"</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Type</div>
+                        <div class="stat-value">Armored, Biological</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Attacks</div>
+                        <div class="stat-value">2 | To Hit: 3+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Range</div>
+                        <div class="stat-value">18" (Ground & Air)</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Armor Save</div>
+                        <div class="stat-value">4+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Wounds</div>
+                        <div class="stat-value">10</div>
+                    </div>
+                </div>
+                <div class="special-abilities">
+                    <h4>Special Abilities</h4>
+                    <ul>
+                        <li><strong>Spawn Banelings</strong> (once per round): Spawn 2 free Banelings within 3"</li>
+                        <li><strong>Regeneration:</strong> Heal 2 wounds per Production Phase</li>
+                        <li><strong>Swarm Leader:</strong> All Zerglings within 12" gain +1 attack</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-style: italic; color: var(--light-gold);">
+                        <strong>Strategic Role:</strong> Durable frontline hero who spawns suicide bombers. Best surrounded by Zergling swarms.
+                    </p>
+                </div>
+            </div>
+
+            <div class="hero-card">
+                <div class="unit-header" style="border-color: var(--gold);">
+                    <span class="unit-name" style="font-size: 2em;">Abathur</span>
+                    <span style="color: var(--gold); font-weight: 700;">Evolution Master</span>
+                </div>
+                <img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fmedia.criticalhit.net%2F2016%2F06%2FAbathur-StarCraft-II.jpg&f=1&nofb=1&ipt=e6418195834a4e47ad58b120d859ac4e017a60428e05a18637a065303c008bd9" alt="Evolution specialist" class="unit-image">
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Move</div>
+                        <div class="stat-value">Cannot Move</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Type</div>
+                        <div class="stat-value">Armored, Biological</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Attacks</div>
+                        <div class="stat-value">Cannot Attack</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Range</div>
+                        <div class="stat-value">-</div>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Armor Save</div>
+                        <div class="stat-value">3+</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Wounds</div>
+                        <div class="stat-value">12</div>
+                    </div>
+                </div>
+                <div class="special-abilities">
+                    <h4>Special Abilities</h4>
+                    <ul>
+                        <li><strong>Evolution:</strong> Each Production Phase, choose one unit type - all units of that type gain +1 To Hit until next Production Phase</li>
+                        <li><strong>Toxic Nest:</strong> Place up to 3 toxic mines (2" radius, 2 auto hits when triggered)</li>
+                        <li><strong>Symbiote</strong> (once per round): Target friendly unit gains +2 attacks this round</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-style: italic; color: var(--light-gold);">
+                        <strong>Strategic Role:</strong> Base-bound support hero. Buffs entire army from safety. Cannot be assassinated unless opponent reaches your base.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer style="text-align: center; padding: 40px 20px; background: var(--primary-blue); margin-top: 60px; border-top: 2px solid var(--gold);">
+        <p>Next: <a href="scenarios.html" style="color: var(--gold);">Scenarios</a> | <a href="reference.html" style="color: var(--gold);">Quick Reference</a></p>
+    </footer>
+
+    <script>
+        function toggleNav() {
+            const nav = document.getElementById('navMenu');
+            nav.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('navMenu');
+            const toggle = document.querySelector('.nav-toggle');
+            
+            if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

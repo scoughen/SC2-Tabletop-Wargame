@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Reference - StarCraft 2 Tabletop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a2332;
+            --secondary-blue: #2d3e50;
+            --accent-blue: #4a90e2;
+            --gold: #d4af37;
+            --light-gold: #f4e5a0;
+            --text-light: #e0e0e0;
+            --text-dark: #0a0a0a;
+            --card-bg: #1e2936;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0a0a0a 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .nav-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--gold);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--secondary-blue) 0%, var(--primary-blue) 100%);
+            padding: 80px 30px 30px;
+            transition: left 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .nav-menu.active {
+            left: 0;
+        }
+
+        .nav-menu h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+        }
+
+        .nav-menu ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-menu ul li a:hover {
+            color: var(--gold);
+            padding-left: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 20px 40px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3em;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .toc {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-blue);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .toc h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .toc ul {
+            list-style: none;
+            column-count: 2;
+            column-gap: 30px;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            color: var(--gold);
+        }
+
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            color: var(--gold);
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            color: var(--light-gold);
+            margin: 30px 0 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--secondary-blue);
+        }
+
+        th {
+            background: var(--secondary-blue);
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+        }
+
+        .reference-card {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-blue);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .faction-section {
+            margin-top: 30px;
+        }
+
+        .faction-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            color: var(--accent-blue);
+            margin: 20px 0 15px;
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 5px;
+        }
+
+        @media print {
+            .nav-toggle, .nav-menu {
+                display: none;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .toc ul {
+                column-count: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="nav-toggle" onclick="toggleNav()">☰ MENU</button>
+    
+    <nav class="nav-menu" id="navMenu">
+        <h3>Navigation</h3>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Core Rules</a></li>
+            <li><a href="terran.html">Terran</a></li>
+            <li><a href="protoss.html">Protoss</a></li>
+            <li><a href="zerg.html">Zerg</a></li>
+            <li><a href="scenarios.html">Scenarios</a></li>
+            <li><a href="reference.html">Quick Reference</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Quick Reference</h1>
+        <p style="font-size: 1.2em; margin-top: 20px;">Essential tables and upgrade information</p>
+    </header>
+
+    <div class="container">
+        <div class="toc">
+            <h2>Contents</h2>
+            <ul>
+                <li><a href="#orders">Orders Quick Reference</a></li>
+                <li><a href="#combat">Combat Reference</a></li>
+                <li><a href="#production">Production Limits</a></li>
+                <li><a href="#income">Income Reference</a></li>
+                <li><a href="#upgrades">Upgrade Tables</a></li>
+                <li><a href="#keywords">Keywords Glossary</a></li>
+            </ul>
+        </div>
+
+        <section id="orders">
+            <h2>Orders Quick Reference</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Movement</th>
+                        <th>Other Actions</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ADVANCE</strong></td>
+                        <td>Full Move</td>
+                        <td>Shoot at -1 OR melee</td>
+                        <td>Closing distance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FIRE</strong></td>
+                        <td>Half Move</td>
+                        <td>Shoot at normal</td>
+                        <td>Ranged combat</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ASSAULT</strong></td>
+                        <td>Full Move</td>
+                        <td>Melee attack</td>
+                        <td>Charging into combat</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ABILITY</strong></td>
+                        <td>Half Move</td>
+                        <td>Use special ability</td>
+                        <td>Siege, Stim, Blink</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HOLD</strong></td>
+                        <td>None</td>
+                        <td>+1 Armor Save, Overwatch</td>
+                        <td>Defense</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GATHER</strong></td>
+                        <td>Full Move</td>
+                        <td>End adjacent to resources</td>
+                        <td>Workers only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BUILD</strong></td>
+                        <td>Full Move</td>
+                        <td>Start/continue construction</td>
+                        <td>Workers only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>REPAIR</strong></td>
+                        <td>Full Move</td>
+                        <td>Heal 1 wound (5M cost)</td>
+                        <td>SCVs only</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="combat">
+            <h2>Combat Reference</h2>
+
+            <h3>To Hit Target Numbers</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Skill Level</th>
+                        <th>Target Number</th>
+                        <th>Example Units</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Elite</td>
+                        <td>3+</td>
+                        <td>Zealots, Siege Tanks, Immortals</td>
+                    </tr>
+                    <tr>
+                        <td>Veteran</td>
+                        <td>4+</td>
+                        <td>Marines, Stalkers, Roaches, Hydralisks</td>
+                    </tr>
+                    <tr>
+                        <td>Trained</td>
+                        <td>5+</td>
+                        <td>Workers, Reapers</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Armor Save Values</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Armor Type</th>
+                        <th>Save</th>
+                        <th>Example Units</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Heavy</td>
+                        <td>3+</td>
+                        <td>Siege Tank, Ultralisk, Immortal</td>
+                    </tr>
+                    <tr>
+                        <td>Medium</td>
+                        <td>4+</td>
+                        <td>Roach, Stalker, Marauder</td>
+                    </tr>
+                    <tr>
+                        <td>Light</td>
+                        <td>5+</td>
+                        <td>Marine, Zergling, Zealot</td>
+                    </tr>
+                    <tr>
+                        <td>Unarmored</td>
+                        <td>6+</td>
+                        <td>Workers</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Common Weapon Ranges</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Weapon Type</th>
+                        <th>Range</th>
+                        <th>Example Units</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Melee</td>
+                        <td>0-0.5"</td>
+                        <td>Zealot, Zergling</td>
+                    </tr>
+                    <tr>
+                        <td>Short</td>
+                        <td>12"</td>
+                        <td>Hellion, Sentry, Roach</td>
+                    </tr>
+                    <tr>
+                        <td>Medium</td>
+                        <td>18"</td>
+                        <td>Marine, Stalker, Hydralisk</td>
+                    </tr>
+                    <tr>
+                        <td>Extreme</td>
+                        <td>26"</td>
+                        <td>Siege Tank (sieged)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="production">
+            <h2>Production & Income Reference</h2>
+
+            <h3>Production Limits (Per Building Per Round)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Building Type</th>
+                        <th>Capacity</th>
+                        <th>Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Infantry Production</td>
+                        <td>4 units</td>
+                        <td>Barracks, Gateway, Spawning Pool</td>
+                    </tr>
+                    <tr>
+                        <td>Vehicle Production</td>
+                        <td>2 units</td>
+                        <td>Factory, Robotics, Roach Warren</td>
+                    </tr>
+                    <tr>
+                        <td>Air Production</td>
+                        <td>1 unit</td>
+                        <td>Starport, Stargate, Spire</td>
+                    </tr>
+                    <tr>
+                        <td>Worker Production</td>
+                        <td>3 units</td>
+                        <td>Command Center, Nexus, Hatchery</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Income Reference</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Source</th>
+                        <th>Income</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Main Base Building</td>
+                        <td>+10 Minerals</td>
+                    </tr>
+                    <tr>
+                        <td>Worker on Minerals</td>
+                        <td>+5 Minerals</td>
+                    </tr>
+                    <tr>
+                        <td>Worker on Gas</td>
+                        <td>+5 Gas</td>
+                    </tr>
+                    <tr>
+                        <td>MULE (Terran, 3 rounds)</td>
+                        <td>+15 Minerals</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="reference-card">
+                <p><strong>Starting Income:</strong> 1 base (+10M) + 6 workers (+30M) = +40M per round</p>
+            </div>
+
+            <h3>Construction Time</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Structure Type</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Most Buildings</td>
+                        <td>1 round</td>
+                    </tr>
+                    <tr>
+                        <td>Main Base</td>
+                        <td>2 rounds</td>
+                    </tr>
+                    <tr>
+                        <td>Add-ons</td>
+                        <td>1 round</td>
+                    </tr>
+                    <tr>
+                        <td>Upgrades</td>
+                        <td>1 round</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="upgrades">
+            <h2>Upgrade Tables</h2>
+
+            <div class="faction-section">
+                <div class="faction-header">TERRAN UPGRADES</div>
+
+                <h3>Weapons & Armor (Engineering Bay)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Upgrade</th>
+                            <th>Cost</th>
+                            <th>Effect</th>
+                            <th>Applies To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Infantry Weapons +1</td>
+                            <td>50M/50G</td>
+                            <td>+1 To Hit</td>
+                            <td>Marines, Marauders, Reapers</td>
+                        </tr>
+                        <tr>
+                            <td>Infantry Weapons +2</td>
+                            <td>75M/75G</td>
+                            <td>+1 To Hit</td>
+                            <td>Marines, Marauders, Reapers</td>
+                        </tr>
+                        <tr>
+                            <td>Infantry Armor +1</td>
+                            <td>50M/50G</td>
+                            <td>+1 Armor Save*</td>
+                            <td>Marines, Marauders, Reapers</td>
+                        </tr>
+                        <tr>
+                            <td>Infantry Armor +2</td>
+                            <td>75M/75G</td>
+                            <td>+1 Armor Save*</td>
+                            <td>Marines, Marauders, Reapers</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.9em; margin-top: 5px;">*Armor Save capped at 3+</p>
+
+                <h3>Unit-Specific Upgrades</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Upgrade</th>
+                            <th>Cost</th>
+                            <th>Time</th>
+                            <th>Effect</th>
+                            <th>Building</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Stim Pack</td>
+                            <td>40M/40G</td>
+                            <td>1 round</td>
+                            <td>Marines/Marauders: +1 attack, +2" move, lose 1 wound</td>
+                            <td>Barracks Tech Lab</td>
+                        </tr>
+                        <tr>
+                            <td>Combat Shield</td>
+                            <td>40M/40G</td>
+                            <td>1 round</td>
+                            <td>Marines: +1 Wound (1→2)</td>
+                            <td>Barracks Tech Lab</td>
+                        </tr>
+                        <tr>
+                            <td>Hellbat Transform</td>
+                            <td>60M/60G</td>
+                            <td>1 round</td>
+                            <td>Hellions can transform to/from Hellbat</td>
+                            <td>Factory Tech Lab</td>
+                        </tr>
+                        <tr>
+                            <td>Ignition Afterburners</td>
+                            <td>40M/40G</td>
+                            <td>1 round</td>
+                            <td>Medivac: +4" move once per round</td>
+                            <td>Starport Tech Lab</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="faction-section">
+                <div class="faction-header">PROTOSS UPGRADES</div>
+
+                <h3>Weapons & Armor (Forge)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Upgrade</th>
+                            <th>Cost</th>
+                            <th>Effect</th>
+                            <th>Applies To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ground Weapons +1</td>
+                            <td>50M/50G</td>
+                            <td>+1 To Hit</td>
+                            <td>Zealots, Stalkers, Sentries, Immortals, Colossi</td>
+                        </tr>
+                        <tr>
+                            <td>Ground Weapons +2</td>
+                            <td>75M/75G</td>
+                            <td>+1 To Hit</td>
+                            <td>Zealots, Stalkers, Sentries, Immortals, Colossi</td>
+                        </tr>
+                        <tr>
+                            <td>Ground Armor +1</td>
+                            <td>50M/50G</td>
+                            <td>+1 Armor Save*</td>
+                            <td>Zealots, Stalkers, Sentries, Immortals, Colossi</td>
+                        </tr>
+                        <tr>
+                            <td>Ground Armor +2</td>
+                            <td>75M/75G</td>
+                            <td>+1 Armor Save*</td>
+                            <td>Zealots, Stalkers, Sentries, Immortals, Colossi</td>
+                        </tr>
+                        <tr>
+                            <td>Shields +1</td>
+                            <td>75M/75G</td>
+                            <td>+1 Shield point</td>
+                            <td>All Protoss units/buildings</td>
+                        </tr>
+                        <tr>
+                            <td>Shields +2</td>
+                            <td>100M/100G</td>
+                            <td>+1 Shield point</td>
+                            <td>All Protoss units/buildings</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Unit-Specific Upgrades</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Upgrade</th>
+                            <th>Cost</th>
+                            <th>Effect</th>
+                            <th>Building</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Charge</td>
+                            <td>80M/80G</td>
+                            <td>Zealots: +6" move toward enemy, engage melee</td>
+                            <td>Twilight Council</td>
+                        </tr>
+                        <tr>
+                            <td>Blink</td>
+                            <td>60M/60G</td>
+                            <td>Stalkers: teleport up to 8" (once per activation)</td>
+                            <td>Twilight Council</td>
+                        </tr>
+                        <tr>
+                            <td>Warp Gate</td>
+                            <td>75M/75G</td>
+                            <td>Gateways transform; instant production near Pylons</td>
+                            <td>Cybernetics Core</td>
+                        </tr>
+                        <tr>
+                            <td>Extended Thermal Lance</td>
+                            <td>80M/80G</td>
+                            <td>Colossi: +3" range (18"→21")</td>
+                            <td>Robotics Bay</td>
+                        </tr>
+                        <tr>
+                            <td>Anion Pulse Crystals</td>
+                            <td>60M/60G</td>
+                            <td>Phoenix: +2" range (12"→14")</td>
+                            <td>Fleet Beacon</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="faction-section">
+                <div class="faction-header">ZERG UPGRADES</div>
+
+                <h3>Weapons & Armor (Evolution Chamber)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Upgrade</th>
+                            <th>Cost</th>
+                            <th>Effect</th>
+                            <th>Applies To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Melee Attacks +1</td>
+                            <td>50M/50G</td>
+                            <td>+1 To Hit</td>
+                            <td>Zerglings, Ultralisks</td>
+                        </tr>
+                        <tr>
+                            <td>Melee Attacks +2</td>
+                            <td>75M/75G</td>
+                            <td>+1 To Hit</td>
+                            <td>Zerglings, Ultralisks</td>
+                        </tr>
+                        <tr>
+                            <td>Ranged Attacks +1</td>
+                            <td>50M/50G</td>
+                            <td>+1 To Hit</td>
+                            <td>Roaches, Hydralisks, Queens</td>
+                        </tr>
+                        <tr>
+                            <td>Ranged Attacks +2</td>
+                            <td>75M/75G</td>
+                            <td>+1 To Hit</td>
+                            <td>Roaches, Hydralisks, Queens</td>
+                        </tr>
+                        <tr>
+                            <td>Ground Carapace +1</td>
+                            <td>50M/50G</td>
+                            <td>+1 Armor Save*</td>
+                            <td>All ground units</td>
+                        </tr>
+                        <tr>
+                            <td>Ground Carapace +2</td>
+                            <td>75M/75G</td>
+                            <td>+1 Armor Save*</td>
+                            <td>All ground units</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Unit-Specific Upgrades</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Upgrade</th>
+                            <th>Cost</th>
+                            <th>Effect</th>
+                            <th>Building</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Metabolic Boost</td>
+                            <td>40M/40G</td>
+                            <td>Zerglings: +2" move (8"→10")</td>
+                            <td>Spawning Pool</td>
+                        </tr>
+                        <tr>
+                            <td>Adrenal Glands</td>
+                            <td>80M/80G</td>
+                            <td>Zerglings: +1 attack (1→2)</td>
+                            <td>Spawning Pool (req. Hive)</td>
+                        </tr>
+                        <tr>
+                            <td>Glial Reconstitution</td>
+                            <td>40M/40G</td>
+                            <td>Roaches: +2" move (5"→7")</td>
+                            <td>Roach Warren</td>
+                        </tr>
+                        <tr>
+                            <td>Tunneling Claws</td>
+                            <td>60M/60G</td>
+                            <td>Roaches: move while burrowed (3")</td>
+                            <td>Roach Warren (req. Burrow)</td>
+                        </tr>
+                        <tr>
+                            <td>Muscular Augments</td>
+                            <td>40M/40G</td>
+                            <td>Hydralisks: +2" move (5"→7")</td>
+                            <td>Hydralisk Den</td>
+                        </tr>
+                        <tr>
+                            <td>Grooved Spines</td>
+                            <td>60M/60G</td>
+                            <td>Hydralisks: +6" range (18"→24")</td>
+                            <td>Hydralisk Den</td>
+                        </tr>
+                        <tr>
+                            <td>Centrifugal Hooks</td>
+                            <td>60M/60G</td>
+                            <td>Banelings: +2" move (7"→9")</td>
+                            <td>Baneling Nest</td>
+                        </tr>
+                        <tr>
+                            <td>Burrow</td>
+                            <td>40M/40G</td>
+                            <td>All ground units can burrow/unburrow</td>
+                            <td>Lair</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="keywords">
+            <h2>Keywords Glossary</h2>
+
+            <h3>Unit Type Keywords</h3>
+            <div class="reference-card">
+                <p><strong>Armored:</strong> Vulnerable to Strike: Armored attacks. Heavy armor classification.</p>
+                <p><strong>Biological:</strong> Can be healed by Medivacs. Affected by biological-specific abilities. Organic units.</p>
+                <p><strong>Flying:</strong> Ignores terrain, buildings, units for movement. Can only be attacked by anti-air weapons.</p>
+                <p><strong>Light:</strong> Vulnerable to Strike: Light attacks. Lightly armored classification.</p>
+                <p><strong>Massive:</strong> Heaviest unit classification. Very large units (Ultralisks, Thors, Colossi).</p>
+                <p><strong>Mechanical:</strong> Can be repaired by SCVs (Terran). Immune to biological effects. Robotic units.</p>
+                <p><strong>Psionic:</strong> Rare classification for caster units. Specific to certain abilities.</p>
+            </div>
+
+            <h3>Combat Keywords</h3>
+            <div class="reference-card">
+                <p><strong>Strike: [Type]:</strong> Unit gains +1 die per model vs specified type. Strike hits ignore armor saves.</p>
+                <p><strong>Splash Damage:</strong> Attack hits multiple targets. Place template; all units within take automatic hits.</p>
+                <p><strong>To Hit:</strong> Target number required on d6 to score hit. Lower is better (3+ better than 5+).</p>
+                <p><strong>Armor Save:</strong> Target number required on d6 to prevent damage. Lower is better. Capped at 3+ maximum.</p>
+            </div>
+
+            <h3>Special Abilities</h3>
+            <div class="reference-card">
+                <p><strong>Burrow (Zerg):</strong> Use ABILITY order to burrow/unburrow. Cannot be targeted without detection. Cannot move or attack while burrowed (except with Tunneling Claws).</p>
+                <p><strong>Charge (Zealot):</strong> Once per activation, move +6" directly toward nearest enemy and engage in melee.</p>
+                <p><strong>Blink (Stalker):</strong> Once per activation, teleport up to 8", ignoring terrain, units, buildings.</p>
+                <p><strong>Cliff Jumping (Reaper, Colossus):</strong> Ignore elevation changes. Move over cliffs as if flat ground.</p>
+                <p><strong>Cloak:</strong> Unit cannot be targeted without detection. Requires detector units/buildings to reveal.</p>
+                <p><strong>Detection:</strong> Reveals cloaked/burrowed units within range. Raven, Overseer, Observer (units). Missile Turret, Spore Crawler, Photon Cannon (buildings).</p>
+                <p><strong>Overwatch:</strong> Units on HOLD order can react when enemies move within LOS and range. Shoot at -1 To Hit before enemy completes action.</p>
+                <p><strong>Regeneration (Zerg):</strong> Heal wounds during Production Phase if took no damage that round.</p>
+                <p><strong>Repair (Terran SCV):</strong> Heal 1 wound on mechanical unit/building. Costs 5 Minerals. Must be adjacent.</p>
+                <p><strong>Shield Regeneration (Protoss):</strong> Regenerate 1 shield per Production Phase. Units: only if took no damage. Buildings: automatic.</p>
+                <p><strong>Stim Pack:</strong> Marines/Marauders gain +1 attack and +2" move for activation. Lose 1 wound. Cannot use if at 1 wound (unless Combat Shield).</p>
+            </div>
+
+            <h3>Building Keywords</h3>
+            <div class="reference-card">
+                <p><strong>Automated Defense:</strong> Defensive structures attack during both players' turns. Overwatch always active with no -1 To Hit penalty.</p>
+                <p><strong>Creep (Zerg):</strong> Zerg buildings must be on creep to function. Spreads 6" radius from Hatchery/Creep Tumor.</p>
+                <p><strong>Garrison (Bunker):</strong> Can hold up to 4 infantry. Garrisoned units cannot be attacked. Fire at full range with +1 To Hit.</p>
+                <p><strong>Lift Off (Terran):</strong> Building can use ABILITY order to lift off or land. Moves 6" while flying. Cannot produce while flying.</p>
+                <p><strong>Pylon Power (Protoss):</strong> Buildings must be within 9" of Pylon to function. Unpowered buildings cannot produce or attack.</p>
+                <p><strong>Warp In (Protoss):</strong> Probe starts construction then leaves. Building auto-completes after 1 round.</p>
+                <p><strong>Warp Gate (Protoss):</strong> Instant unit production anywhere within 9" of any Pylon. No production queue.</p>
+            </div>
+
+            <h3>Production Keywords</h3>
+            <div class="reference-card">
+                <p><strong>Command Group:</strong> Group of up to 12 combat units or up to 3 workers. Each group = 1 die in activation bag.</p>
+                <p><strong>Larva (Zerg):</strong> All Zerg units cost larva + resources. Hatcheries generate 3 larva per Production Phase (max 9 stored).</p>
+                <p><strong>Reactor (Terran):</strong> Double production capacity. Can only produce basic units.</p>
+                <p><strong>Tech Lab (Terran):</strong> Unlocks advanced units. Can produce both basic and advanced units.</p>
+            </div>
+        </section>
+    </div>
+
+    <footer style="text-align: center; padding: 40px 20px; background: var(--primary-blue); margin-top: 60px; border-top: 2px solid var(--gold);">
+        <p><a href="index.html" style="color: var(--gold);">Return to Home</a> | <a href="rules.html" style="color: var(--gold);">Core Rules</a></p>
+        <p style="margin-top: 20px; font-size: 0.9em;">StarCraft 2 Tabletop Wargame - Fan-made Rulebook</p>
+    </footer>
+
+    <script>
+        function toggleNav() {
+            const nav = document.getElementById('navMenu');
+            nav.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('navMenu');
+            const toggle = document.querySelector('.nav-toggle');
+            
+            if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

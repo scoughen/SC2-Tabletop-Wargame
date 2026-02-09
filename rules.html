@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Rules - StarCraft 2 Tabletop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a2332;
+            --secondary-blue: #2d3e50;
+            --accent-blue: #4a90e2;
+            --gold: #d4af37;
+            --light-gold: #f4e5a0;
+            --text-light: #e0e0e0;
+            --text-dark: #0a0a0a;
+            --card-bg: #1e2936;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0a0a0a 100%);
+            color: var(--text-light);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .nav-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--gold);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--secondary-blue) 0%, var(--primary-blue) 100%);
+            padding: 80px 30px 30px;
+            transition: left 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-menu.active {
+            left: 0;
+        }
+
+        .nav-menu h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+        }
+
+        .nav-menu ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu ul li a:hover {
+            color: var(--gold);
+            border-left-color: var(--gold);
+            padding-left: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 100px 20px 40px;
+            background: linear-gradient(180deg, rgba(26, 35, 50, 0.9) 0%, transparent 100%);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3em;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-blue);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .toc h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .toc ul {
+            list-style: none;
+            column-count: 2;
+            column-gap: 30px;
+        }
+
+        .toc li {
+            margin-bottom: 10px;
+        }
+
+        .toc a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: var(--gold);
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            color: var(--gold);
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--accent-blue);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            color: var(--light-gold);
+            margin: 30px 0 15px;
+        }
+
+        h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3em;
+            color: var(--accent-blue);
+            margin: 20px 0 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: var(--card-bg);
+            border-left: 4px solid var(--gold);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-box strong {
+            color: var(--gold);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--secondary-blue);
+        }
+
+        th {
+            background: var(--secondary-blue);
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            color: var(--accent-blue);
+            cursor: help;
+            border-bottom: 1px dotted var(--accent-blue);
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: var(--secondary-blue);
+            color: var(--text-light);
+            text-align: left;
+            border-radius: 6px;
+            padding: 15px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 2px solid var(--gold);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Code/Example Boxes */
+        .example {
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid var(--accent-blue);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-style: italic;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .nav-toggle, .nav-menu {
+                display: none;
+            }
+            .tooltip .tooltiptext {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="nav-toggle" onclick="toggleNav()">☰ MENU</button>
+    
+    <nav class="nav-menu" id="navMenu">
+        <h3>Navigation</h3>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Core Rules</a></li>
+            <li><a href="terran.html">Terran</a></li>
+            <li><a href="protoss.html">Protoss</a></li>
+            <li><a href="zerg.html">Zerg</a></li>
+            <li><a href="scenarios.html">Scenarios</a></li>
+            <li><a href="reference.html">Quick Reference</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Core Rules</h1>
+    </header>
+
+    <div class="container">
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#overview">Game Overview & Setup</a></li>
+                <li><a href="#turn-structure">Turn Structure</a></li>
+                <li><a href="#economy">Economy Phase</a></li>
+                <li><a href="#action">Action Phase</a></li>
+                <li><a href="#movement">Movement Rules</a></li>
+                <li><a href="#combat">Combat System</a></li>
+                <li><a href="#production">Production Phase</a></li>
+                <li><a href="#buildings">Buildings & Construction</a></li>
+                <li><a href="#special-rules">Special Rules & Keywords</a></li>
+            </ul>
+        </div>
+
+        <section id="overview">
+            <h2>1. Game Overview & Setup</h2>
+            
+            <h3>Game Summary</h3>
+            <p>StarCraft 2 Tabletop is a fast-paced tactical wargame for 2 players simulating real-time strategy battles. Players build economies, construct buildings, produce armies, and fight for control of the battlefield.</p>
+            
+            <div class="info-box">
+                <p><strong>Game Length:</strong> 10 rounds maximum (45-60 minutes)</p>
+                <p><strong>Board Size:</strong> 3' × 3' (36" × 36")</p>
+                <p><strong>Model Scale:</strong> 15-28mm miniatures</p>
+            </div>
+
+            <h3>What You Need</h3>
+            <ul>
+                <li>3' × 3' playing surface</li>
+                <li>Miniatures (or proxies) for units and buildings</li>
+                <li>Six-sided dice (d6) - multiple per player</li>
+                <li>Measuring tape or rulers (marked in inches)</li>
+                <li>Resource tracking sheet</li>
+                <li>Colored dice pool (different color per player) for activations</li>
+                <li>Tokens/markers for resource nodes, expansions, wounds, shields, etc.</li>
+            </ul>
+
+            <h3>Victory Conditions</h3>
+            <p>Victory conditions vary by scenario. Common conditions include:</p>
+            <ul>
+                <li><strong>Annihilation:</strong> Destroy enemy main base</li>
+                <li><strong>Control:</strong> Hold majority of objectives</li>
+                <li><strong>Economic:</strong> Reach resource threshold</li>
+                <li><strong>Timed:</strong> Most Victory Points at Round 10</li>
+            </ul>
+
+            <h3>Setup</h3>
+            <h4>Step 1: Choose Scenario</h4>
+            <p>Players agree on a scenario or roll randomly.</p>
+
+            <h4>Step 2: Set Up Board</h4>
+            <ul>
+                <li>Place 3' × 3' playing surface</li>
+                <li>Mark 7 base locations:
+                    <ul>
+                        <li>2 starting bases (opposite corners)</li>
+                        <li>5 neutral expansions (center, mid-field × 2, forward × 2)</li>
+                    </ul>
+                </li>
+                <li>Each base location includes:
+                    <ul>
+                        <li>6 mineral nodes (arranged in arc, 6" from base center)</li>
+                        <li>1 gas vent (at end of mineral arc, 6" from base center)</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>Step 3: Deploy Starting Forces</h4>
+            <p>Each player receives:</p>
+            <ul>
+                <li><strong>1 Main Base Building</strong> (Command Center/Nexus/Hatchery)
+                    <ul>
+                        <li>Placed in deployment zone (12" × 12" corner triangle)</li>
+                        <li>At least 6" from board edges</li>
+                    </ul>
+                </li>
+                <li><strong>6 Workers</strong> (SCV/Probe/Drone)
+                    <ul>
+                        <li>Placed adjacent to main base</li>
+                    </ul>
+                </li>
+                <li><strong>Starting Resources:</strong> 200 Minerals, 0 Vespene Gas</li>
+            </ul>
+
+            <div class="info-box">
+                <p><strong>Deployment Zones:</strong></p>
+                <p><strong>Player 1:</strong> Bottom-left corner (12" × 12" triangle)</p>
+                <p><strong>Player 2:</strong> Top-right corner (12" × 12" triangle)</p>
+                <p>Distance between main bases: ~33" diagonal</p>
+            </div>
+        </section>
+
+        <section id="turn-structure">
+            <h2>2. Turn Structure</h2>
+            <p>Each round consists of three phases executed in order:</p>
+            
+            <h3>PHASE 1: Economy Phase (Simultaneous)</h3>
+            <p>Both players collect resources simultaneously.</p>
+
+            <h3>PHASE 2: Action Phase (Alternating)</h3>
+            <p>Players alternate activating <span class="tooltip">Command Groups<span class="tooltiptext">Groups of up to 12 combat units or 3 workers. Each group = 1 die in activation bag.</span></span> using Order Dice system.</p>
+
+            <h3>PHASE 3: Production Phase (Simultaneous)</h3>
+            <p>Both players produce units, advance construction, and research upgrades.</p>
+        </section>
+
+        <section id="economy">
+            <h2>3. Economy Phase</h2>
+            <p>Both players execute simultaneously (~30 seconds):</p>
+
+            <h3>Step 1: Collect Income</h3>
+            <ul>
+                <li><strong>Main Base Building:</strong> +10 Minerals (automatic)</li>
+                <li><strong>Workers on Minerals:</strong> +5 Minerals per worker adjacent to mineral node</li>
+                <li><strong>Workers on Gas:</strong> +5 Gas per worker adjacent to gas extractor</li>
+            </ul>
+
+            <div class="info-box">
+                <p><strong>Restrictions:</strong></p>
+                <ul>
+                    <li>Maximum 1 worker per mineral node</li>
+                    <li>Maximum 3 workers per gas extractor</li>
+                    <li>Workers must be within 6" of a main base structure to collect resources</li>
+                </ul>
+            </div>
+
+            <h3>Step 2: Record Resources</h3>
+            <p>Update resource totals on tracking sheet.</p>
+
+            <div class="example">
+                <strong>Example:</strong> 1 Command Center (+10M) + 4 workers on minerals (+20M) + 2 workers on gas (+10G) = +30M, +10G this round
+            </div>
+        </section>
+
+        <section id="action">
+            <h2>4. Action Phase</h2>
+            
+            <h3>Order Dice System</h3>
+            <ol>
+                <li><strong>Count Command Groups:</strong> Each player counts their Command Groups
+                    <ul>
+                        <li>Combat units: Groups of up to 12 models (1 die per group)</li>
+                        <li>Workers: Groups of up to 3 workers (1 die per group)</li>
+                    </ul>
+                </li>
+                <li><strong>Place Dice:</strong> Each player places 1 colored die per Command Group into shared bag/cup</li>
+                <li><strong>Draw & Activate:</strong> Draw 1 die → that player activates 1 Command Group → repeat until bag empty</li>
+            </ol>
+
+            <h3>Command Group Activation</h3>
+            <p>When your die is drawn, choose ONE Command Group and give it an ORDER. Each Command Group can only be activated once per round.</p>
+
+            <h4>ADVANCE (Move + Shoot)</h4>
+            <ul>
+                <li>Move up to full Movement distance</li>
+                <li>Shoot at -1 <span class="tooltip">To Hit<span class="tooltiptext">The target number needed on a d6 to score a hit. Lower is better (3+ better than 5+).</span></span> penalty OR don't shoot</li>
+            </ul>
+
+            <h4>FIRE (Shoot + Short Move)</h4>
+            <ul>
+                <li>Move up to half Movement distance</li>
+                <li>Shoot at normal accuracy</li>
+            </ul>
+
+            <h4>ASSAULT (Move + Melee)</h4>
+            <ul>
+                <li>Move up to full Movement distance</li>
+                <li>Engage in melee combat (must end in base contact)</li>
+            </ul>
+
+            <h4>ABILITY (Special Action)</h4>
+            <ul>
+                <li>Use unit-specific ability (Siege Mode, Stim, Blink, etc.)</li>
+                <li>Move up to half Movement distance</li>
+                <li>Cannot shoot</li>
+            </ul>
+
+            <h4>HOLD (Defensive Stance)</h4>
+            <ul>
+                <li>No movement</li>
+                <li>+1 to <span class="tooltip">Armor Save<span class="tooltiptext">Target number needed on d6 to prevent damage. Lower is better (3+ better than 5+). Maximum save is 3+.</span></span> until next activation</li>
+                <li>Can use <span class="tooltip">Overwatch<span class="tooltiptext">Reaction fire when enemies move within line of sight. Shoots at -1 To Hit before enemy completes action.</span></span></li>
+            </ul>
+
+            <h4>GATHER (Workers Only)</h4>
+            <ul>
+                <li>Move up to full Movement distance</li>
+                <li>Must end adjacent to mineral nodes or gas extractors</li>
+                <li>Must be within 6" of main base structure</li>
+                <li>Generates resources next Economy Phase</li>
+            </ul>
+
+            <h4>BUILD (Workers Only)</h4>
+            <ul>
+                <li>Move up to full Movement distance</li>
+                <li>Start or continue building construction</li>
+                <li>Workers can split from group to BUILD individually</li>
+            </ul>
+
+            <h4>REPAIR (Terran SCVs Only)</h4>
+            <ul>
+                <li>Move up to full Movement distance</li>
+                <li>Must end adjacent to damaged mechanical unit/building (within 0.5")</li>
+                <li>Pay 5 Minerals</li>
+                <li>Heal 1 wound on target</li>
+            </ul>
+
+            <h3>Overwatch (Reaction Fire)</h3>
+            <ul>
+                <li>Units on HOLD order can declare Overwatch</li>
+                <li>Place "Overwatch" marker next to unit</li>
+                <li>When enemy moves within line of sight AND range:
+                    <ul>
+                        <li>Overwatch unit shoots at -1 To Hit</li>
+                        <li>Resolve before enemy completes action</li>
+                        <li>Remove Overwatch marker after firing</li>
+                    </ul>
+                </li>
+                <li><strong>Limitation:</strong> Only one Overwatch shot per activation</li>
+            </ul>
+        </section>
+
+        <section id="movement">
+            <h2>5. Movement Rules</h2>
+
+            <h3>Basic Movement</h3>
+            <ul>
+                <li>Units move up to their Move stat (in inches)</li>
+                <li>Can move in any direction</li>
+                <li>Can change facing freely during movement</li>
+                <li>Do not have to use full movement</li>
+            </ul>
+
+            <h3>Terrain Restrictions</h3>
+            
+            <h4>Ground Units</h4>
+            <ul>
+                <li><strong>Cannot move through:</strong> Buildings, terrain obstacles, other units (friendly or enemy)</li>
+                <li><strong>Elevation changes:</strong> Must use ramps (cannot climb cliffs)</li>
+                <li><strong>Must go around:</strong> Buildings and impassable terrain</li>
+            </ul>
+
+            <h4>Flying Units</h4>
+            <ul>
+                <li><strong>Ignore:</strong> Buildings, terrain, elevation, other units</li>
+                <li>Can move freely over all obstacles</li>
+            </ul>
+
+            <h3>Special Movement</h3>
+
+            <h4>Cliff Jumping (Reapers, Colossi)</h4>
+            <ul>
+                <li>Ignore elevation changes</li>
+                <li>Move over cliffs as if flat ground</li>
+                <li>Still cannot move through buildings</li>
+            </ul>
+
+            <h4>Blink (Stalkers with upgrade)</h4>
+            <ul>
+                <li>Once per activation, teleport up to 8"</li>
+                <li>Ignores terrain, buildings, units, cliffs</li>
+                <li>Cannot blink into impassable terrain</li>
+            </ul>
+
+            <h4>Burrowed Movement (Roaches with Tunneling Claws)</h4>
+            <ul>
+                <li>Move at half speed while burrowed</li>
+                <li>Cannot be targeted without detection</li>
+            </ul>
+
+            <h3>Table Edge</h3>
+            <ul>
+                <li>Units cannot move off table edge</li>
+                <li>Units pushed toward edge stop at edge</li>
+            </ul>
+        </section>
+
+        <section id="combat">
+            <h2>6. Combat System</h2>
+
+            <h3>Ranged Combat Sequence</h3>
+            <ol>
+                <li>Declare target</li>
+                <li>Check range & line of sight</li>
+                <li>Roll To Hit</li>
+                <li>Apply <span class="tooltip">Strike<span class="tooltiptext">Bonus dice against specific unit types (Light, Armored, etc.). Strike hits ignore armor saves.</span></span> dice (if applicable)</li>
+                <li>Defender rolls saves</li>
+                <li>Apply damage</li>
+            </ol>
+
+            <h3>Melee Combat Sequence</h3>
+            <ol>
+                <li>Models in base contact (within 0.5")</li>
+                <li>Roll To Hit</li>
+                <li>Apply Strike dice (if applicable)</li>
+                <li>Defender rolls saves</li>
+                <li>Apply damage</li>
+            </ol>
+
+            <h3>Rolling To Hit</h3>
+            <ol>
+                <li>Count attacking models</li>
+                <li>Roll attack dice pool: (Attacks stat × number of attacking models)</li>
+                <li>Each die meeting or exceeding "To Hit" value = 1 hit</li>
+                <li>Proceed to Strike check, then saves</li>
+            </ol>
+
+            <div class="info-box">
+                <p><strong>Modifiers:</strong></p>
+                <ul>
+                    <li>Shooting after ADVANCE: -1 To Hit</li>
+                    <li>Overwatch fire: -1 To Hit</li>
+                    <li>HOLD order: Defender gets +1 to Armor Save</li>
+                </ul>
+            </div>
+
+            <h3>Strike Dice (Unit Counters)</h3>
+            <p>Units with Strike abilities gain bonus dice vs specific unit types:</p>
+
+            <h4>Strike Types:</h4>
+            <ul>
+                <li><strong>Strike: Light</strong> - Bonus vs <span class="tooltip">Light<span class="tooltiptext">Lightly armored units like Marines, Zerglings, Zealots. Vulnerable to Strike: Light attacks.</span></span> units</li>
+                <li><strong>Strike: Armored</strong> - Bonus vs <span class="tooltip">Armored<span class="tooltiptext">Heavy armor units like Marauders, Roaches, Stalkers. Vulnerable to Strike: Armored attacks.</span></span> units</li>
+                <li><strong>Strike: Biological</strong> - Bonus vs <span class="tooltip">Biological<span class="tooltiptext">Organic units that can be healed by Medivacs. Includes most infantry and Zerg units.</span></span> units</li>
+                <li><strong>Strike: Mechanical</strong> - Bonus vs <span class="tooltip">Mechanical<span class="tooltiptext">Robotic units that can be repaired (Terran). Immune to biological effects.</span></span> units</li>
+                <li><strong>Strike: Massive</strong> - Bonus vs <span class="tooltip">Massive<span class="tooltiptext">Largest unit classification. Very heavy units like Ultralisks, Thors, Colossi.</span></span> units</li>
+            </ul>
+
+            <h4>Rules:</h4>
+            <ul>
+                <li>Add +1 die per attacking model vs target type</li>
+                <li>Strike dice hit on same To Hit number</li>
+                <li><strong>Strike hits ignore armor saves</strong></li>
+            </ul>
+
+            <div class="example">
+                <strong>Example:</strong> 4 Marauders (Strike: Armored) attack Roaches (Armored)
+                <br>Base: 4 models × 1 attack = 4 dice
+                <br>Strike: +4 dice (1 per model)
+                <br>Total: 8 dice, Strike hits ignore saves
+            </div>
+
+            <h3>Armor Saves</h3>
+            <ol>
+                <li>Defender rolls 1 die per hit</li>
+                <li>Each die meeting or exceeding Armor Save = damage prevented</li>
+                <li>Failed saves = damage applied to Wounds</li>
+                <li><strong>Strike hits cannot be saved</strong> (ignore armor)</li>
+            </ol>
+
+            <h3>Protoss Shields</h3>
+            <p>Protoss units have two defense layers:</p>
+            <ul>
+                <li><strong>Shields:</strong> Absorb damage first</li>
+                <li><strong>Wounds:</strong> Damaged after shields depleted</li>
+                <li>Armor Save applies to both Shields and Wounds</li>
+                <li>Shields regenerate 1 point per Production Phase (if unit took no damage that round)</li>
+            </ul>
+
+            <h3>Damage & Casualties</h3>
+            <ul>
+                <li>Each failed save = 1 damage</li>
+                <li>Damage reduces Wounds (Shields first for Protoss)</li>
+                <li>When Wounds reach 0, model removed</li>
+                <li>Multi-wound models: Track damage with dice/tokens</li>
+            </ul>
+
+            <h3>Splash Damage</h3>
+            <p>Some units hit multiple targets:</p>
+
+            <h4>Types:</h4>
+            <ul>
+                <li><strong>Radius Splash:</strong> Place template, all units within take automatic hits</li>
+                <li><strong>Line Splash:</strong> All units along line take automatic hits</li>
+            </ul>
+
+            <h4>Rules:</h4>
+            <ol>
+                <li>Attack primary target normally</li>
+                <li>If hits scored, place splash template</li>
+                <li>All units within template take 1 automatic hit each (no To Hit roll)</li>
+                <li>Defenders save normally</li>
+            </ol>
+
+            <div class="example">
+                <strong>Examples:</strong>
+                <ul>
+                    <li>Siege Tank (Sieged): 3" radius splash</li>
+                    <li>Colossus: 6" line splash</li>
+                    <li>Baneling (death): 2" radius splash</li>
+                    <li>Hellion: 8" line splash</li>
+                </ul>
+            </div>
+
+            <h3>Line of Sight</h3>
+            <ul>
+                <li>Must have clear line of sight to target</li>
+                <li>Buildings and terrain block LOS</li>
+                <li>Units do not block LOS (abstract)</li>
+                <li>Measure from attacker to any point on target</li>
+            </ul>
+
+            <h3>Range</h3>
+            <ul>
+                <li>Measure from closest point of attacker's base to closest point of target's base</li>
+                <li><strong>Melee:</strong> 0-0.5" (base contact)</li>
+                <li><strong>Ranged:</strong> Varies by weapon (6", 12", 18", 26", etc.)</li>
+                <li>Pre-measuring allowed at any time</li>
+            </ul>
+
+            <h3>Ground vs Air Targeting</h3>
+            <ul>
+                <li><strong>Ground Only:</strong> Can only attack ground units</li>
+                <li><strong>Air Only:</strong> Can only attack flying units</li>
+                <li><strong>Ground and Air:</strong> Can attack both</li>
+                <li><span class="tooltip">Flying<span class="tooltiptext">Units that ignore terrain for movement. Can only be attacked by anti-air weapons.</span></span> units can only be attacked by anti-air weapons</li>
+            </ul>
+        </section>
+
+        <section id="production">
+            <h2>7. Production Phase</h2>
+            <p>Both players execute simultaneously (~1-2 minutes):</p>
+
+            <h3>Step 1: Advance Construction</h3>
+            <ul>
+                <li>Buildings under construction advance 1 round</li>
+                <li>Most buildings complete after 1 round</li>
+                <li>Main bases (Command Center/Nexus/Hatchery) take 2 rounds</li>
+                <li>Completed buildings become active</li>
+            </ul>
+
+            <h3>Step 2: Building Regeneration</h3>
+            <ul>
+                <li><strong>Zerg buildings:</strong> Regenerate 1 wound automatically</li>
+                <li><strong>Protoss buildings:</strong> Regenerate 1 shield automatically</li>
+                <li><strong>Terran buildings:</strong> Repaired by SCVs (costs minerals, done during Action Phase)</li>
+            </ul>
+
+            <h3>Step 3: Produce Units</h3>
+            <ul>
+                <li>Spend resources to produce units</li>
+                <li>Must have appropriate building</li>
+                <li>Units available NEXT round (not immediate)</li>
+                <li>Units deploy adjacent to producing building</li>
+                <li>Respect production building capacity limits</li>
+            </ul>
+
+            <div class="info-box">
+                <p><strong>Production Limits (per building per round):</strong></p>
+                <ul>
+                    <li>Barracks/Gateway/Spawning Pool: 4 infantry max</li>
+                    <li>Factory/Robotics/Roach Warren: 2 vehicles max</li>
+                    <li>Starport/Stargate/Spire: 1 air unit max</li>
+                    <li>Command Center/Nexus/Hatchery: 3 workers max</li>
+                </ul>
+            </div>
+
+            <h3>Step 4: Research Upgrades (Optional)</h3>
+            <ul>
+                <li>Spend resources on permanent upgrades</li>
+                <li>Upgrades take 1 round to complete</li>
+                <li>Apply to all relevant units immediately when complete</li>
+            </ul>
+
+            <h3>Step 5: Build New Structures</h3>
+            <ul>
+                <li>Pay resource cost to start construction</li>
+                <li>Worker must use BUILD order during Action Phase</li>
+                <li>Note construction time (usually 1 round)</li>
+            </ul>
+        </section>
+
+        <section id="buildings">
+            <h2>8. Buildings & Construction</h2>
+
+            <h3>Building Stats</h3>
+            <p>Buildings have:</p>
+            <ul>
+                <li><strong>Armor Save:</strong> Defense value</li>
+                <li><strong>Wounds/HP:</strong> Damage capacity</li>
+                <li><strong>Shields</strong> (Protoss only): Regenerating defense layer</li>
+                <li><strong>Production Capacity:</strong> Units produced per round</li>
+                <li><strong>Unlocks:</strong> Units/buildings available after construction</li>
+            </ul>
+
+            <h3>Attacking Buildings</h3>
+            <ul>
+                <li>Buildings targeted like units</li>
+                <li>Most buildings cannot fight back</li>
+                <li>Defensive buildings can attack (Bunker, Photon Cannon, Spine Crawler, Spore Crawler, Missile Turret)</li>
+            </ul>
+
+            <h3>Construction Time</h3>
+            <ul>
+                <li><strong>Most buildings:</strong> 1 round</li>
+                <li><strong>Main bases:</strong> 2 rounds</li>
+                <li><strong>Upgrades:</strong> Instant or 1 round</li>
+            </ul>
+
+            <h3>Building Placement</h3>
+
+            <h4>Terran</h4>
+            <ul>
+                <li>Can build anywhere on board (most flexible)</li>
+                <li>SCV must stay adjacent during construction</li>
+                <li>Cannot gather or fight while building</li>
+                <li>Most buildings can lift off and relocate</li>
+            </ul>
+
+            <h4>Protoss</h4>
+            <ul>
+                <li>Must build within Pylon power radius (9" from any Pylon)</li>
+                <li>Probe starts construction then leaves</li>
+                <li>Building auto-completes after 1 round</li>
+                <li>Unpowered buildings cannot function</li>
+            </ul>
+
+            <h4>Zerg</h4>
+            <ul>
+                <li>Must build on <span class="tooltip">creep<span class="tooltiptext">Purple organic carpet spreading 6" from Hatcheries and Creep Tumors. Required for Zerg building placement.</span></span> (6" radius from Hatchery/Creep Tumor)</li>
+                <li>Drone consumed when building starts (remove drone)</li>
+                <li>Building auto-completes after 1 round</li>
+                <li>Buildings regenerate 1 wound per Production Phase</li>
+            </ul>
+
+            <h3>Defensive Buildings</h3>
+            <p><strong>Automated Defense:</strong> Defensive structures attack during both players' turns</p>
+            <ul>
+                <li>Overwatch always active with no -1 To Hit penalty</li>
+                <li>Attack any enemy in range automatically</li>
+            </ul>
+
+            <p><strong>Detection:</strong> Some defensive buildings reveal cloaked/burrowed units</p>
+            <ul>
+                <li>Missile Turret (Terran): 12" detection radius</li>
+                <li>Spore Crawler (Zerg): 12" detection radius</li>
+                <li>Photon Cannon (Protoss): 12" detection radius</li>
+            </ul>
+        </section>
+
+        <section id="special-rules">
+            <h2>9. Special Rules & Keywords</h2>
+
+            <h3>Unit Type Classifications</h3>
+
+            <h4>Size/Armor Types</h4>
+            <ul>
+                <li><strong>Light:</strong> Vulnerable to Strike: Light (Marines, Zerglings, Zealots, Mutalisks)</li>
+                <li><strong>Armored:</strong> Vulnerable to Strike: Armored (Marauders, Roaches, Stalkers, Tanks)</li>
+                <li><strong>Massive:</strong> Very heavy units (Ultralisks, Thors, Colossi, Carriers)</li>
+            </ul>
+
+            <h4>Composition Types</h4>
+            <ul>
+                <li><strong>Biological:</strong> Can be healed by Medivacs, affected by biological abilities</li>
+                <li><strong>Mechanical:</strong> Can be repaired (Terran), immune to biological effects</li>
+                <li><strong>Psionic:</strong> Rare, specific to caster units</li>
+            </ul>
+
+            <p><strong>Note:</strong> Units can have multiple types (Marine = Light + Biological)</p>
+
+            <h3>Universal Abilities</h3>
+
+            <h4>Flying</h4>
+            <ul>
+                <li>Ignores terrain, buildings, elevation, units for movement</li>
+                <li>Can only be attacked by anti-air weapons</li>
+                <li>Cannot end movement on impassable terrain</li>
+            </ul>
+
+            <h4>Burrow (Zerg Upgrade)</h4>
+            <ul>
+                <li>Use ABILITY order to burrow/unburrow (costs full activation)</li>
+                <li>Burrowed units cannot move or attack (unless Tunneling Claws)</li>
+                <li>Cannot be targeted without detection</li>
+                <li>Detectors reveal burrowed units</li>
+            </ul>
+
+            <h4>Detection</h4>
+            <p>Units/buildings that reveal cloaked/burrowed enemies:</p>
+            <ul>
+                <li>Raven, Missile Turret (Terran)</li>
+                <li>Overseer, Spore Crawler (Zerg)</li>
+                <li>Observer, Photon Cannon (Protoss)</li>
+            </ul>
+
+            <h4>Regeneration (Zerg)</h4>
+            <ul>
+                <li>Heal wounds during Production Phase</li>
+                <li>Only if unit took no damage that round</li>
+            </ul>
+
+            <h4>Shield Regeneration (Protoss)</h4>
+            <ul>
+                <li>Regenerate 1 shield per Production Phase</li>
+                <li>Only if unit took no damage that round</li>
+                <li>Buildings regenerate shields automatically</li>
+            </ul>
+
+            <h3>Worker Mechanics</h3>
+
+            <h4>Gathering</h4>
+            <ul>
+                <li>Must be adjacent to mineral node or gas extractor</li>
+                <li>Must be within 6" of main base structure</li>
+                <li>Generate +5 resources per Economy Phase</li>
+            </ul>
+
+            <h4>Building Construction</h4>
+            <p>See faction-specific sections for construction rules per faction.</p>
+
+            <h4>Worker Combat</h4>
+            <ul>
+                <li>Workers have basic combat stats (weak)</li>
+                <li>Can fight back when attacked</li>
+                <li>Killing workers cripples economy (harassment strategy)</li>
+            </ul>
+
+            <h3>Command Groups</h3>
+            <ul>
+                <li>Maximum 12 models per combat Command Group</li>
+                <li>Maximum 3 workers per worker group</li>
+                <li>Each Command Group = 1 die in activation bag</li>
+                <li>All models in group must perform same order</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer style="text-align: center; padding: 40px 20px; background: var(--primary-blue); margin-top: 60px; border-top: 2px solid var(--gold);">
+        <p>Continue to <a href="terran.html" style="color: var(--gold);">Terran Rules</a> | <a href="reference.html" style="color: var(--gold);">Quick Reference</a></p>
+    </footer>
+
+    <script>
+        function toggleNav() {
+            const nav = document.getElementById('navMenu');
+            nav.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('navMenu');
+            const toggle = document.querySelector('.nav-toggle');
+            
+            if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

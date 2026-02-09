@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StarCraft 2 Tabletop Wargame - Rulebook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1a2332;
+            --secondary-blue: #2d3e50;
+            --accent-blue: #4a90e2;
+            --gold: #d4af37;
+            --light-gold: #f4e5a0;
+            --text-light: #e0e0e0;
+            --text-dark: #0a0a0a;
+            --card-bg: #1e2936;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0a0a0a 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .nav-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--gold);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-toggle:hover {
+            background: var(--light-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--secondary-blue) 0%, var(--primary-blue) 100%);
+            padding: 80px 30px 30px;
+            transition: left 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-menu.active {
+            left: 0;
+        }
+
+        .nav-menu h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+        }
+
+        .nav-menu ul li {
+            margin-bottom: 15px;
+        }
+
+        .nav-menu ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu ul li a:hover {
+            color: var(--gold);
+            border-left-color: var(--gold);
+            padding-left: 20px;
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 100px 20px 60px;
+            background: linear-gradient(180deg, rgba(26, 35, 50, 0.9) 0%, transparent 100%);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4em;
+            font-weight: 900;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5em;
+            color: var(--accent-blue);
+            letter-spacing: 2px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .hero-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            margin: 30px 0;
+        }
+
+        /* Section Cards */
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-blue);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .section-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+            border-color: var(--gold);
+        }
+
+        .section-card h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .section-card p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .section-card a {
+            display: inline-block;
+            background: var(--accent-blue);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .section-card a:hover {
+            background: var(--gold);
+            color: var(--text-dark);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--primary-blue);
+            margin-top: 60px;
+            border-top: 2px solid var(--gold);
+        }
+
+        footer p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav-toggle,
+            .nav-menu {
+                display: none;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .section-card {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="nav-toggle" onclick="toggleNav()">☰ MENU</button>
+    
+    <nav class="nav-menu" id="navMenu">
+        <h3>Navigation</h3>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Core Rules</a></li>
+            <li><a href="terran.html">Terran</a></li>
+            <li><a href="protoss.html">Protoss</a></li>
+            <li><a href="zerg.html">Zerg</a></li>
+            <li><a href="scenarios.html">Scenarios</a></li>
+            <li><a href="reference.html">Quick Reference</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>StarCraft 2</h1>
+        <p class="subtitle">Tabletop Wargame Rulebook</p>
+    </header>
+
+    <div class="container">
+        <div class="hero-section">
+            <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-wixmp-ed30a86b8c4ca887773594c2.wixmp.com%2Ff%2F5cb46e19-00c1-4be3-bede-a670ba9d13fc%2Fdfyrha5-6e7f7b42-5563-4935-9d19-f6922275c05f.png%2Fv1%2Ffill%2Fw_1920%2Ch_1080%2Cq_80%2Cstrp%2Fstarcraft_wallpaper_4k_by_oldmanlefty_dfyrha5-fullview.jpg%3Ftoken%3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTA4MCIsInBhdGgiOiJcL2ZcLzVjYjQ2ZTE5LTAwYzEtNGJlMy1iZWRlLWE2NzBiYTlkMTNmY1wvZGZ5cmhhNS02ZTdmN2I0Mi01NTYzLTQ5MzUtOWQxOS1mNjkyMjI3NWMwNWYucG5nIiwid2lkdGgiOiI8PTE5MjAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.X-pdv1ACjpQ1QihjGEEVWVmrJIWnPXCOV5VvFJKc2K4&f=1&nofb=1&ipt=a421863114f83f8234bfea7a25bb0dc0e28828b87a360425e6256f806daf2c79" alt="Strategic battle scene" class="hero-image">
+            <p style="font-size: 1.2em; margin-top: 20px;">A fast-paced tactical wargame for 2 players simulating real-time strategy battles. Build your economy, construct buildings, produce armies, and fight for control of the battlefield.</p>
+        </div>
+
+        <div class="section-grid">
+            <div class="section-card">
+                <h2>Core Rules</h2>
+                <p>Learn the fundamental mechanics of gameplay, from economy management to combat resolution.</p>
+                <a href="rules.html">Read Rules</a>
+            </div>
+
+            <div class="section-card">
+                <h2>Terran</h2>
+                <p>Master the versatile Terran faction with their mobile bases and mechanical armies.</p>
+                <a href="terran.html">Terran Guide</a>
+            </div>
+
+            <div class="section-card">
+                <h2>Protoss</h2>
+                <p>Command the advanced Protoss with powerful shields and warp technology.</p>
+                <a href="protoss.html">Protoss Guide</a>
+            </div>
+
+            <div class="section-card">
+                <h2>Zerg</h2>
+                <p>Control the adaptable Zerg swarm with rapid production and regeneration.</p>
+                <a href="zerg.html">Zerg Guide</a>
+            </div>
+
+            <div class="section-card">
+                <h2>Scenarios</h2>
+                <p>Explore different victory conditions and gameplay modes for varied experiences.</p>
+                <a href="scenarios.html">View Scenarios</a>
+            </div>
+
+            <div class="section-card">
+                <h2>Quick Reference</h2>
+                <p>Fast access to stat tables, upgrades, and essential game information.</p>
+                <a href="reference.html">Reference Guide</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>StarCraft 2 Tabletop Wargame - Fan-made Rulebook</p>
+        <p>StarCraft is a trademark of Blizzard Entertainment, Inc.</p>
+    </footer>
+
+    <script>
+        function toggleNav() {
+            const nav = document.getElementById('navMenu');
+            nav.classList.toggle('active');
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('navMenu');
+            const toggle = document.querySelector('.nav-toggle');
+            
+            if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
