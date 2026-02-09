@@ -4,7 +4,6 @@ SC2-based Tabletop Wargame Rules and Related Documents
 
 A complete tabletop wargame adaptation of StarCraft 2, featuring all three factions (Terran, Protoss, and Zerg) with detailed rules, unit stats, and multiple gameplay scenarios.
 
-![StarCraft 2 Tabletop]([https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-wixmp-ed30a86b8c4ca887773594c2.wixmp.com%2Ff%2F5cb46e19-00c1-4be3-bede-a670ba9d13fc%2Fdfyrha5-6e7f7b42-5563-4935-9d19-f6922275c05f.png%2Fv1%2Ffill%2Fw_1920%2Ch_1080%2Cq_80%2Cstrp%2Fstarcraft_wallpaper_4k_by_oldmanlefty_dfyrha5-fullview.jpg%3Ftoken%3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTA4MCIsInBhdGgiOiJcL2ZcLzVjYjQ2ZTE5LTAwYzEtNGJlMy1iZWRlLWE2NzBiYTlkMTNmY1wvZGZ5cmhhNS02ZTdmN2I0Mi01NTYzLTQ5MzUtOWQxOS1mNjkyMjI3NWMwNWYucG5nIiwid2lkdGgiOiI8PTE5MjAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.X-pdv1ACjpQ1QihjGEEVWVmrJIWnPXCOV5VvFJKc2K4&f=1&nofb=1&ipt=a421863114f83f8234bfea7a25bb0dc0e28828b87a360425e6256f806daf2c79))
 
 ## 🎮 About
 
